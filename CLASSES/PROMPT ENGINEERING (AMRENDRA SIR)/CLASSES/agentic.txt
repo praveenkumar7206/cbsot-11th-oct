@@ -1,0 +1,4 @@
+project 1 - numpy 1.13 version
+project 2 - nnumpy  2.3 version
+memory( we want our ai to store data )
+frmaework - lanchange

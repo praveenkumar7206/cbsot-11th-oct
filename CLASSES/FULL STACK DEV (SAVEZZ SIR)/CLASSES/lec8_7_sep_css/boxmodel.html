@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #content {
+            width: 300px;
+            height: 50px;
+            box-sizing: border-box;
+            background-color: yellow;
+            overflow: scroll;
+            /* kuch extra content hoga jo uss width and height ma fill nhi hoga soo wo scroll pa daal deag upar nicha kar sakta hai  */
+            /* writing mode property */
+        }
+
+        .link :hover {
+            color: red;
+            /*  also checkout these properties active visited active */
+        }
+
+        /* .font{
+            <link rel="preconnect" href="https://fonts.googleapis.com">
+            <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+            <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+        } */
+        section {
+            font-size: 2em;
+        }
+
+        section p {
+            font-size: 2em;
+        }
+    </style>
+</head>
+
+<body>
+
+    hello
+    <h1 style="border: 5px solid red;">HEAD</h1>
+    <br>
+    <P class="font" font-weight: 800; font-size: 25px;">Lorem ipsum dolor sit amet consectetur adipisicing elit. Enim,
+        asperiores fuga maxime commodi ratione, laborum accusantium amet illo et porro dolores voluptas officia sequi
+        quaerat quas, aliquam optio accusamus a.
+    </P>
+    <br>
+
+    <div style="border: 10px solid yellow; margin: 20px; background-color: blue;">this is div</div>
+
+
+    <p style="float:right;">Lorem ipsum dolor spturi?</p>
+    <p style="text-align: center;">Lorem ipsum dolor spturi?</p>
+    <!-- text align works on whole conteent and text akign justify dont brreak wors in chnaging line and float works on inline element -->
+    <!-- text decoration prop -->
+    <!-- text transform -->
+    <!-- line height? - height between lines of  text-->
+    <div style="text-align: center; background-color: yellowgreen; width: 50%;">
+        <span>span</span>
+    </div>
+
+    <p style="line-height: 30px; text-align: justify;">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Ullam
+        qui alias placeat delectus, odio quod laborum quos, tempore saepe atque cupiditate sunt! Velit nesciunt dolore
+        perferendis illo iure doloribus temporibus!</p>
+
+    <div id="content">ejfbheugfbhewre kjewfgbwegfweiwf ufhwe ofwfh wfg wfwwefhwhf wfuwefhwef we fwhef we wfh wfwj wf
+        wfjweofwwjf oiwefwffweh f oiwef wefbwiuefwe wjehfgvbwei</div>
+
+    <!-- cursor properties also see -->
+    <!-- we can usee cursor prop anywhere -->
+
+    <a class="link" href="https://www.google.com/">google link</a>
+    <br>
+    <br>
+    <br>
+    <!-- semnetic elements -->
+    <!-- absolute values like inch meter we dont use it in web dev , we use relative value like pixel (for small increment , it works acc to page like rem but em depdns on immediate parents), em ( it does what u want as u wish but rem give output relative to website  rem doesnt depdnds on what value we give) , rem(for bigger increment 24px=1rem) , % (it acts relatively to website), rh (relative height) , rw (relative wdith)  (rw and rh is usded for screen raltive height and width and it doesnt respons on screen lkarge and small)-->
+
+    <section>hello section
+        <p>
+            this praragraph in section
+        </p>
+    </section>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+
+    <div style="background-color: aqua; width: 78vw; height: 50vh; overflow: scroll; text-align: justify; ">
+        hello
+        <h1 style="border: 5px solid red;">HEAD</h1>
+        <br>
+        <P class="font" font-weight: 800; font-size: 25px;">Lorem ipsum dolor sit amet consectetur adipisicing elit.
+            Enim, asperiores fuga maxime commodi ratione, laborum accusantium amet illo et porro dolores voluptas
+            officia sequi quaerat quas, aliquam optio accusamus a.
+        </P>
+        <br>
+
+        <div style="border: 10px solid yellow; margin: 20px; background-color: blue;">this is div</div>
+
+
+        <p style="float:right;">Lorem ipsum dolor spturi?</p>
+        <p style="text-align: center;">Lorem ipsum dolor spturi?</p>
+        <!-- text align works on whole conteent and text akign justify dont brreak wors in chnaging line and float works on inline element -->
+        <!-- text decoration prop -->
+        <!-- text transform -->
+        <!-- line height? - height between lines of  text-->
+        <div style="text-align: center; background-color: yellowgreen; width: 50%;">
+            <span>span</span>
+        </div>
+
+        <p style="line-height: 30px; text-align: justify;">Lorem ipsum dolor sit amet consectetur, adipisicing elit.
+            Ullam qui alias placeat delectus, odio quod laborum quos, tempore saepe atque cupiditate sunt! Velit
+            nesciunt dolore perferendis illo iure doloribus temporibus!</p>
+
+        <div id="content">ejfbheugfbhewre kjewfgbwegfweiwf ufhwe ofwfh wfg wfwwefhwhf wfuwefhwef we fwhef we wfh wfwj wf
+            wfjweofwwjf oiwefwffweh f oiwef wefbwiuefwe wjehfgvbwei</div>
+
+        <!-- cursor properties also see -->
+        <!-- we can usee cursor prop anywhere -->
+
+        <a class="link" href="https://www.acadlance.com/" target="_blank">acadlence</a>
+        <br>
+        <br>
+        <br>
+        <!-- semnetic elements -->
+        <!-- absolute values like inch meter we dont use it in web dev , we use relative value like pixel (for small increment , it works acc to page like rem but em depdns on immediate parents), em ( it does what u want as u wish but rem give output relative to website  rem doesnt depdnds on what value we give) , rem(for bigger increment 24px=1rem) , % , rh (relative height) , rw (relative wdith)  (rw and rh is usded for screen raltive height and width)-->
+
+        <section>hello section
+            <p>
+                this praragraph in section
+            </p>
+        </section>
+    </div>
+
+
+</body>
+
+</html>

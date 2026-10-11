@@ -1,0 +1,1486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PS ESPORTS | Dominating the Next Gen of Competitive Gaming</title>
+  
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@500;600;700&family=Space+Grotesk:wght@400;600&display=swap" rel="stylesheet">
+  
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <style>
+    :root {
+      --bg-dark: #07080d;
+      --bg-card: rgba(15, 17, 28, 0.75);
+      --bg-card-hover: rgba(22, 26, 42, 0.9);
+      --neon-cyan: #00f3ff;
+      --neon-pink: #ff0055;
+      --neon-purple: #8000ff;
+      --gold-accent: #ffd700;
+      --text-main: #f0f4f8;
+      --text-muted: #8e9aae;
+      --border-cyan: rgba(0, 243, 255, 0.3);
+      --border-pink: rgba(ff, 0, 85, 0.3);
+      --cyber-font-title: 'Orbitron', sans-serif;
+      --cyber-font-sub: 'Rajdhani', sans-serif;
+      --cyber-font-body: 'Space Grotesk', sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      font-family: var(--cyber-font-body);
+      overflow-x: hidden;
+      background-image: 
+        radial-gradient(circle at 15% 15%, rgba(128, 0, 255, 0.08) 0%, transparent 40%),
+        radial-gradient(circle at 85% 85%, rgba(0, 243, 255, 0.08) 0%, transparent 40%);
+      background-attachment: fixed;
+    }
+
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #090a10;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: var(--neon-cyan);
+      border-radius: 4px;
+      box-shadow: 0 0 10px var(--neon-cyan);
+    }
+
+    h1, h2, h3, h4, .cyber-font {
+      font-family: var(--cyber-font-title);
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+    }
+
+    .sub-heading {
+      font-family: var(--cyber-font-sub);
+      font-weight: 700;
+      letter-spacing: 2px;
+    }
+
+    .cyber-btn {
+      position: relative;
+      background: linear-gradient(135deg, rgba(0, 243, 255, 0.15), rgba(128, 0, 255, 0.25));
+      border: 1px solid var(--neon-cyan);
+      color: var(--neon-cyan);
+      font-family: var(--cyber-font-title);
+      font-size: 0.85rem;
+      font-weight: 700;
+      padding: 12px 28px;
+      clip-path: polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px);
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+
+    .cyber-btn:hover {
+      background: var(--neon-cyan);
+      color: #000;
+      box-shadow: 0 0 25px rgba(0, 243, 255, 0.8);
+      transform: translateY(-2px);
+    }
+
+    .cyber-btn-pink {
+      background: linear-gradient(135deg, rgba(255, 0, 85, 0.2), rgba(128, 0, 255, 0.3));
+      border-color: var(--neon-pink);
+      color: var(--neon-pink);
+    }
+
+    .cyber-btn-pink:hover {
+      background: var(--neon-pink);
+      color: #fff;
+      box-shadow: 0 0 25px rgba(255, 0, 85, 0.8);
+    }
+
+    .glass-card {
+      background: var(--bg-card);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(0, 243, 255, 0.15);
+      border-radius: 12px;
+      transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .glass-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--neon-cyan), transparent);
+      opacity: 0.5;
+      transition: opacity 0.3s;
+    }
+
+    .glass-card:hover {
+      background: var(--bg-card-hover);
+      border-color: rgba(0, 243, 255, 0.4);
+      transform: translateY(-5px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 20px rgba(0, 243, 255, 0.15);
+    }
+
+    .text-glow-cyan {
+      text-shadow: 0 0 12px rgba(0, 243, 255, 0.6);
+      color: var(--neon-cyan);
+    }
+
+    .text-glow-pink {
+      text-shadow: 0 0 12px rgba(255, 0, 85, 0.6);
+      color: var(--neon-pink);
+    }
+
+    .navbar-cyber {
+      background: rgba(7, 8, 13, 0.85);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border-cyan);
+      padding: 15px 0;
+      /* sticky: top; */
+      z-index: 1050;
+    }
+
+    .nav-logo-text {
+      font-size: 1.6rem;
+      font-weight: 900;
+      color: #fff;
+      text-shadow: 0 0 10px var(--neon-cyan);
+    }
+
+    .nav-link-cyber {
+      color: var(--text-main) !important;
+      font-family: var(--cyber-font-sub);
+      font-size: 1.1rem;
+      font-weight: 600;
+      padding: 8px 16px !important;
+      transition: all 0.2s ease;
+      position: relative;
+    }
+
+    .nav-link-cyber:hover, .nav-link-cyber.active {
+      color: var(--neon-cyan) !important;
+      text-shadow: 0 0 8px var(--neon-cyan);
+    }
+
+    .nav-link-cyber::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      width: 0;
+      height: 2px;
+      background: var(--neon-cyan);
+      transition: all 0.3s ease;
+      transform: translateX(-50%);
+    }
+
+    .nav-link-cyber:hover::after, .nav-link-cyber.active::after {
+      width: 80%;
+      box-shadow: 0 0 8px var(--neon-cyan);
+    }
+
+    .ticker-wrap {
+      background: linear-gradient(90deg, rgba(255,0,85,0.2), rgba(128,0,255,0.2), rgba(0,243,255,0.2));
+      /* border-y: 1px solid rgba(255,255,255,0.1); */
+      overflow: hidden;
+      padding: 8px 0;
+      font-family: var(--cyber-font-sub);
+      font-size: 0.95rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+
+    .ticker-move {
+      display: inline-block;
+      white-space: nowrap;
+      padding-left: 100%;
+      animation: ticker 35s linear infinite;
+    }
+
+    @keyframes ticker {
+      0% { transform: translate3d(0, 0, 0); }
+      100% { transform: translate3d(-100%, 0, 0); }
+    }
+
+    .hero-container {
+      position: relative;
+      min-height: 88vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .hero-grid-bg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-size: 40px 40px;
+      background-image: 
+        linear-gradient(to right, rgba(0, 243, 255, 0.05) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(0, 243, 255, 0.05) 1px, transparent 1px);
+      mask-image: radial-gradient(ellipse at center, black 40%, transparent 80%);
+      z-index: 1;
+    }
+
+    .glitch-title {
+      font-size: clamp(2.2rem, 5vw, 4.5rem);
+      font-weight: 900;
+      line-height: 1.1;
+      background: linear-gradient(180deg, #ffffff 0%, #a2b0cb 100%);
+      /* -webkit-background-clip: text; */
+      -webkit-text-fill-color: transparent;
+      text-transform: uppercase;
+      position: relative;
+    }
+
+    .roster-card {
+      border-radius: 12px;
+      background: rgba(14, 16, 26, 0.85);
+      border: 1px solid rgba(0, 243, 255, 0.2);
+      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      cursor: pointer;
+    }
+
+    .roster-card:hover {
+      border-color: var(--neon-cyan);
+      box-shadow: 0 0 25px rgba(0, 243, 255, 0.3);
+      transform: translateY(-8px) scale(1.02);
+    }
+
+    .player-avatar-wrapper {
+      position: relative;
+      width: 100%;
+      height: 280px;
+      overflow: hidden;
+      border-radius: 10px 10px 0 0;
+      background: radial-gradient(circle, rgba(0,243,255,0.15) 0%, rgba(7,8,13,0.9) 80%);
+    }
+
+    .player-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: top center;
+      transition: transform 0.5s ease;
+      filter: contrast(1.05) brightness(0.95);
+    }
+
+    .roster-card:hover .player-img {
+      transform: scale(1.08);
+      filter: contrast(1.15) brightness(1.05);
+    }
+
+    .role-badge {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: rgba(7, 8, 13, 0.85);
+      border: 1px solid var(--neon-cyan);
+      color: var(--neon-cyan);
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-family: var(--cyber-font-title);
+      backdrop-filter: blur(5px);
+    }
+
+    .match-card {
+      background: rgba(12, 14, 23, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-left: 4px solid var(--neon-cyan);
+      border-radius: 8px;
+      padding: 20px;
+      transition: all 0.25s ease;
+    }
+
+    .match-card.live-match {
+      border-left-color: var(--neon-pink);
+      background: rgba(255, 0, 85, 0.05);
+      animation: pulse-live 2s infinite alternate;
+    }
+
+    @keyframes pulse-live {
+      0% { box-shadow: 0 0 5px rgba(255,0,85,0.2); }
+      100% { box-shadow: 0 0 20px rgba(255,0,85,0.5); }
+    }
+
+    .odds-bar-container {
+      height: 6px;
+      width: 100%;
+      background: rgba(255,255,255,0.1);
+      border-radius: 3px;
+      overflow: hidden;
+      display: flex;
+    }
+
+    .merch-card {
+      background: rgba(15, 17, 28, 0.85);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .merch-card:hover {
+      border-color: var(--neon-pink);
+      transform: translateY(-6px);
+      box-shadow: 0 10px 25px rgba(255, 0, 85, 0.2);
+    }
+
+    .merch-img-box {
+      position: relative;
+      height: 250px;
+      background: #0d0f19;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .merch-img {
+      max-height: 100%;
+      max-width: 100%;
+      object-fit: contain;
+      transition: transform 0.4s ease;
+    }
+
+    .merch-card:hover .merch-img {
+      transform: scale(1.08);
+    }
+
+    .cart-drawer {
+      position: fixed;
+      top: 0;
+      right: -420px;
+      width: 100%;
+      max-width: 400px;
+      height: 100vh;
+      background: #0a0c14;
+      border-left: 2px solid var(--neon-cyan);
+      z-index: 2000;
+      transition: right 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: -10px 0 40px rgba(0,0,0,0.8);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .cart-drawer.open {
+      right: 0;
+    }
+
+    .cart-backdrop {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(4px);
+      z-index: 1999;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .cart-backdrop.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .marquee-container {
+      overflow: hidden;
+      white-space: nowrap;
+      position: relative;
+      background: rgba(0, 0, 0, 0.4);
+      /* border-y: 1px solid rgba(255, 255, 255, 0.05); */
+      padding: 25px 0;
+    }
+
+    .marquee-content {
+      display: inline-flex;
+      align-items: center;
+      gap: 60px;
+      animation: marquee 25s linear infinite;
+    }
+
+    @keyframes marquee {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    .cyber-modal .modal-content {
+      background: #0c0e18;
+      border: 1px solid var(--neon-cyan);
+      box-shadow: 0 0 35px rgba(0, 243, 255, 0.35);
+      color: var(--text-main);
+      border-radius: 12px;
+    }
+
+    .cyber-input {
+      background: rgba(18, 21, 35, 0.9) !important;
+      border: 1px solid rgba(0, 243, 255, 0.25) !important;
+      color: #fff !important;
+      font-family: var(--cyber-font-body);
+      padding: 12px 16px;
+      border-radius: 6px;
+    }
+
+    .cyber-input:focus {
+      border-color: var(--neon-cyan) !important;
+      box-shadow: 0 0 12px rgba(0, 243, 255, 0.4) !important;
+      outline: none;
+    }
+
+    .audio-visualizer-bar {
+      width: 3px;
+      height: 16px;
+      background: var(--neon-cyan);
+      border-radius: 2px;
+      animation: audio-bounce 0.8s ease-in-out infinite alternate;
+    }
+
+    @keyframes audio-bounce {
+      0% { height: 4px; }
+      100% { height: 22px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="root"></div>
+
+  <script type="text/babel">
+
+    const playSound = (type = 'click') => {
+      try {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (!AudioCtx) return;
+        const ctx = new AudioCtx();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+
+        const now = ctx.currentTime;
+
+        if (type === 'click') {
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(800, now);
+          osc.frequency.exponentialRampToValueAtTime(400, now + 0.05);
+          gain.gain.setValueAtTime(0.15, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.05);
+          osc.start(now);
+          osc.stop(now + 0.05);
+        } else if (type === 'success') {
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(523.25, now);
+          osc.frequency.setValueAtTime(659.25, now + 0.08);
+          osc.frequency.setValueAtTime(783.99, now + 0.16);
+          gain.gain.setValueAtTime(0.2, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
+          osc.start(now);
+          osc.stop(now + 0.25);
+        } else if (type === 'glitch') {
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(150, now);
+          osc.frequency.linearRampToValueAtTime(600, now + 0.08);
+          gain.gain.setValueAtTime(0.15, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
+          osc.start(now);
+          osc.stop(now + 0.1);
+        }
+      } catch (e) {
+        // Audio context muted or restricted by browser
+      }
+    };
+
+    const ROSTER_DATA = [
+      {
+        id: 'val-1',
+        ign: 'VIPER',
+        realName: 'Alex Rivera',
+        game: 'VALORANT',
+        role: 'Duelist / Entry',
+        kd: '1.42',
+        winRate: '71%',
+        signature: 'Jett / Raze',
+        avatar: 'https://images.unsplash.com/photo-1566492031773-4f4e44671857?w=600&auto=format&fit=crop&q=80',
+        stats: { headshots: '34%', acs: '268', clutchRate: '19%' },
+        gear: { mouse: 'Logitech G Pro X Superlight 2 (800 DPI, 0.32 Sens)', keyboard: 'Wooting 60HE', headset: 'HyperX Cloud II Pro' },
+        bio: '3-time VCT MVP known for aggressive entry fragging and hyper-reactive Operator shots.'
+      },
+      {
+        id: 'val-2',
+        ign: 'CHRONO',
+        realName: 'Marcus Vance',
+        game: 'VALORANT',
+        role: 'IGL / Controller',
+        kd: '1.18',
+        winRate: '69%',
+        signature: 'Omen / Viper',
+        avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=600&auto=format&fit=crop&q=80',
+        stats: { headshots: '28%', acs: '215', clutchRate: '24%' },
+        gear: { mouse: 'Razer DeathAdder V3 Pro (400 DPI, 0.52 Sens)', keyboard: 'Custom Apex Pro', headset: 'Sennheiser HD 660S' },
+        bio: 'Strategic mastermind behind PS Esports VALORANT dominance across international majors.'
+      },
+      {
+        id: 'bgmi-1',
+        ign: 'SHADOW',
+        realName: 'Rohan Sharma',
+        game: 'BGMI / PUBG',
+        role: 'IGL / Assault',
+        kd: '4.85',
+        winRate: '42%',
+        signature: 'M416 + AKM',
+        avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&auto=format&fit=crop&q=80',
+        stats: { headshots: '41%', avgDamage: '890', clutches: '32' },
+        gear: { device: 'ROG Phone 8 Pro (4 Finger Claw + Gyro)', headset: 'Bose QuietComfort 20' },
+        bio: 'Legendary Indian BGMI captain with back-to-back BGIS trophies.'
+      },
+      {
+        id: 'cs-1',
+        ign: 'PHANTOM',
+        realName: 'Dmitri Volkov',
+        game: 'CS2',
+        role: 'AWPer',
+        kd: '1.38',
+        winRate: '68%',
+        signature: 'AWP / Desert Eagle',
+        avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=600&auto=format&fit=crop&q=80',
+        stats: { headshots: '48%', rating: '1.31', impact: '1.45' },
+        gear: { mouse: 'Zowie EC2-CW (400 DPI, 1.1 Sens)', keyboard: 'SteelSeries Apex Pro', headset: 'Logitech G PRO X 2' },
+        bio: 'Consistently ranked among Major top AWPers with unmatched flick speed.'
+      },
+      {
+        id: 'lol-1',
+        ign: 'SOLARIS',
+        realName: 'Kenji Sato',
+        game: 'League of Legends',
+        role: 'Mid Laner',
+        kd: '5.20 KDA',
+        winRate: '74%',
+        signature: 'Azir / Ahri',
+        avatar: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=600&auto=format&fit=crop&q=80',
+        stats: { csPerMin: '9.8', killParticipation: '76%', soloKills: '28' },
+        gear: { mouse: 'Razer Viper V3 Pro', keyboard: 'Corsair K70 PRO RGB', headset: 'Audio-Technica ATH-M50x' },
+        bio: 'LCS Season MVP known for game-ending teamfight positioning.'
+      },
+      {
+        id: 'apex-1',
+        ign: 'APEX_NOVA',
+        realName: 'Sarah Jenkins',
+        game: 'Apex Legends',
+        role: 'Fragger / Scout',
+        kd: '3.90',
+        winRate: '38%',
+        signature: 'Horizon / R-99',
+        avatar: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=600&auto=format&fit=crop&q=80',
+        stats: { avgDamage: '1,420', killsThisSeason: '2,840', winCount: '190' },
+        gear: { mouse: 'Finalmouse UltralightX', keyboard: 'Wooting 60HE', headset: 'Beyerdynamic DT 990 Pro' },
+        bio: 'ALGS Champion carrying lethal movement mechanics and team coordination.'
+      }
+    ];
+
+    const MATCHES_DATA = [
+      {
+        id: 'm1',
+        game: 'VALORANT',
+        tournament: 'VCT Masters Grand Finals',
+        team1: 'PS ESPORTS',
+        team2: 'SENTINELS',
+        team1Logo: '⚡',
+        team2Logo: '🛡️',
+        status: 'LIVE',
+        score: '2 - 1',
+        time: 'LIVE NOW (Map 4)',
+        mapVeto: 'Bind (PS W), Ascent (SEN W), Lotus (PS W), Haven (In Progress)',
+        hypePs: 68,
+        streamUrl: 'https://www.youtube.com/embed/live_stream?channel=VALORANT'
+      },
+      {
+        id: 'm2',
+        game: 'CS2',
+        tournament: 'PGL Major Copenhagen Semi-Final',
+        team1: 'PS ESPORTS',
+        team2: 'FAZE CLAN',
+        team1Logo: '⚡',
+        team2Logo: '🎯',
+        status: 'UPCOMING',
+        score: 'VS',
+        time: 'TODAY @ 20:00 UTC',
+        mapVeto: 'Mirage, Inferno, Nuke',
+        hypePs: 54,
+        streamUrl: ''
+      },
+      {
+        id: 'm3',
+        game: 'BGMI',
+        tournament: 'BGIS 2026 Grand Finals Day 3',
+        team1: 'PS ESPORTS',
+        team2: 'TEAM SOUL',
+        team1Logo: '⚡',
+        team2Logo: '🔥',
+        status: 'UPCOMING',
+        score: 'Match 14/18',
+        time: 'TOMORROW @ 17:30 IST',
+        mapVeto: 'Erangel, Miramar, Sanhok',
+        hypePs: 61,
+        streamUrl: ''
+      },
+      {
+        id: 'm4',
+        game: 'League of Legends',
+        tournament: 'Worlds Grand Championship',
+        team1: 'PS ESPORTS',
+        team2: 'T1',
+        team1Logo: '⚡',
+        team2Logo: '👑',
+        status: 'RESULTS',
+        score: '3 - 2 (VICTORY)',
+        time: 'YESTERDAY',
+        mapVeto: 'Game 5 Decider - Nexus Burst',
+        hypePs: 51,
+        streamUrl: ''
+      }
+    ];
+
+    const TROPHIES_DATA = [
+      { id: 't1', title: 'VALORANT Masters Champion', year: '2025', prize: '$1,000,000', mvp: 'VIPER', icon: '🏆', squad: 'VALORANT Roster' },
+      { id: 't2', title: 'Esports World Cup CS2 Gold', year: '2025', prize: '$800,000', mvp: 'PHANTOM', icon: '🥇', squad: 'CS2 Roster' },
+      { id: 't3', title: 'BGMI India Series Champion', year: '2024', prize: '₹2,00,00,000', mvp: 'SHADOW', icon: '👑', squad: 'BGMI Squad' },
+      { id: 't4', title: 'Apex Legends Global Series', year: '2024', prize: '$600,000', mvp: 'APEX_NOVA', icon: '⚡', squad: 'Apex Division' }
+    ];
+
+    const MERCH_DATA = [
+      {
+        id: 'p1',
+        name: '2026 Pro Championship Jersey',
+        category: 'Apparel',
+        price: 79.99,
+        badge: 'NEW DROP',
+        img: 'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=500&auto=format&fit=crop&q=80',
+        description: 'Official moisture-wicking tournament jersey worn by PS Esports athletes.'
+      },
+      {
+        id: 'p2',
+        name: 'Stealth Cyber Hoodie - Neon Edition',
+        category: 'Apparel',
+        price: 119.99,
+        badge: 'BESTSELLER',
+        img: 'https://images.unsplash.com/photo-1556905055-8f358a7a47b2?w=500&auto=format&fit=crop&q=80',
+        description: 'Heavyweight fleece hoodie featuring cyber-pattern inner lining and glowing rubberized logos.'
+      },
+      {
+        id: 'p3',
+        name: 'Pro Performance Compression Sleeve',
+        category: 'Gear',
+        price: 29.99,
+        badge: 'PRO APPROVED',
+        img: 'https://images.unsplash.com/photo-1517838277536-f5f99be501cd?w=500&auto=format&fit=crop&q=80',
+        description: 'Low-friction arm sleeve reducing desk drag for precision aiming.'
+      },
+      {
+        id: 'p4',
+        name: 'RGB XL Speed Desk Pad (900x400mm)',
+        category: 'Accessories',
+        price: 49.99,
+        badge: 'LIMITED',
+        img: 'https://images.unsplash.com/photo-1616588589676-63b3d98d022b?w=500&auto=format&fit=crop&q=80',
+        description: 'Micro-woven speed cloth surface with customizable 12-zone RGB perimeter lighting.'
+      }
+    ];
+
+    function App() {
+      const [rosterFilter, setRosterFilter] = React.useState('ALL');
+      const [selectedPlayer, setSelectedPlayer] = React.useState(null);
+      const [selectedStream, setSelectedStream] = React.useState(null);
+      const [cart, setCart] = React.useState([]);
+      const [isCartOpen, setIsCartOpen] = React.useState(false);
+      const [isCheckoutOpen, setIsCheckoutOpen] = React.useState(false);
+      const [isTryoutOpen, setIsTryoutOpen] = React.useState(false);
+      const [audioEnabled, setAudioEnabled] = React.useState(true);
+      const [tryoutSuccessToast, setTryoutSuccessToast] = React.useState(false);
+
+      const [tryoutForm, setTryoutForm] = React.useState({
+        ign: '',
+        game: 'VALORANT',
+        rank: '',
+        role: 'Pro Player',
+        email: '',
+        discord: '',
+        portfolio: '',
+        message: ''
+      });
+
+      // Cart management functions
+      const addToCart = (product, size = 'M') => {
+        playSound('success');
+        setCart(prev => {
+          const existing = prev.find(item => item.id === product.id && item.size === size);
+          if (existing) {
+            return prev.map(item => item.id === product.id && item.size === size ? { ...item, qty: item.qty + 1 } : item);
+          }
+          return [...prev, { ...product, size, qty: 1 }];
+        });
+        setIsCartOpen(true);
+      };
+
+      const updateCartQty = (id, size, delta) => {
+        playSound('click');
+        setCart(prev => prev.map(item => {
+          if (item.id === id && item.size === size) {
+            const newQty = item.qty + delta;
+            return newQty > 0 ? { ...item, qty: newQty } : null;
+          }
+          return item;
+        }).filter(Boolean));
+      };
+
+      const cartTotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+      const cartItemCount = cart.reduce((sum, item) => sum + item.qty, 0);
+
+      // Roster filtering
+      const filteredRoster = rosterFilter === 'ALL' 
+        ? ROSTER_DATA 
+        : ROSTER_DATA.filter(p => p.game.toUpperCase().includes(rosterFilter));
+
+      // Form submission handler
+      const handleTryoutSubmit = (e) => {
+        e.preventDefault();
+        playSound('success');
+        setIsTryoutOpen(false);
+        setTryoutSuccessToast(true);
+        setTimeout(() => setTryoutSuccessToast(false), 5000);
+      };
+
+      return (
+        <div>
+          <div className="ticker-wrap text-white">
+            <div className="ticker-move">
+              <span className="me-5 text-glow-pink"><i className="fa-solid fa-circle text-danger me-2 animate-pulse"></i>🔴 LIVE NOW: VCT Masters Grand Finals vs SENTINELS (Score: 2 - 1)</span>
+              <span className="me-5 text-glow-cyan"><i className="fa-solid fa-trophy text-warning me-2"></i>PS ESPORTS wins League of Legends World Championship!</span>
+              <span className="me-5"><i className="fa-solid fa-fire text-primary me-2"></i>2026 Pro Championship Merch Drop is NOW LIVE!</span>
+            </div>
+          </div>
+
+          <nav className="navbar navbar-expand-lg navbar-cyber sticky-top">
+            <div className="container">
+              <a className="navbar-brand d-flex align-items-center gap-3" href="#" onClick={() => playSound('click')}>
+                <div className="p-2 rounded bg-dark border border-cyan" style={{boxShadow: '0 0 15px var(--neon-cyan)'}}>
+                  <span className="cyber-font fw-black text-glow-cyan fs-3">PS</span>
+                </div>
+                <div className="d-flex flex-column">
+                  <span className="nav-logo-text">PS ESPORTS</span>
+                  <span className="text-muted text-uppercase" style={{fontSize: '0.65rem', letterSpacing: '3px'}}>Pro Esports Org</span>
+                </div>
+              </a>
+
+              <button className="navbar-toggler border-cyan text-white" type="button" data-bs-toggle="collapse" data-bs-target="#navCyberContent">
+                <i className="fa-solid fa-bars fs-3 text-glow-cyan"></i>
+              </button>
+
+              <div className="collapse navbar-collapse" id="navCyberContent">
+                <ul className="navbar-nav mx-auto mb-2 mb-lg-0">
+                  <li className="nav-item"><a className="nav-link nav-link-cyber active" href="#hero" onClick={() => playSound('click')}>HOME</a></li>
+                  <li className="nav-item"><a className="nav-link nav-link-cyber" href="#rosters" onClick={() => playSound('click')}>ROSTERS</a></li>
+                  <li className="nav-item"><a className="nav-link nav-link-cyber" href="#matches" onClick={() => playSound('click')}>MATCHES</a></li>
+                  <li className="nav-item"><a className="nav-link nav-link-cyber" href="#trophies" onClick={() => playSound('click')}>TROPHIES</a></li>
+                  <li className="nav-item"><a className="nav-link nav-link-cyber" href="#merch" onClick={() => playSound('click')}>STORE</a></li>
+                  <li className="nav-item"><a className="nav-link nav-link-cyber" href="#tryouts" onClick={() => playSound('click')}>JOIN US</a></li>
+                </ul>
+
+                <div className="d-flex align-items-center gap-3">
+                  <!-- Sound Toggle Button -->
+                  <button 
+                    className="btn btn-outline-secondary btn-sm rounded-circle p-2" 
+                    title="Toggle Audio Effects"
+                    onClick={() => setAudioEnabled(!audioEnabled)}
+                  >
+                    <i className={`fa-solid ${audioEnabled ? 'fa-volume-high text-glow-cyan' : 'fa-volume-xmark text-muted'}`}></i>
+                  </button>
+
+                  <!-- Merch Cart Trigger Button -->
+                  <button 
+                    className="cyber-btn cyber-btn-pink btn-sm position-relative"
+                    onClick={() => { playSound('click'); setIsCartOpen(true); }}
+                  >
+                    <i className="fa-solid fa-cart-shopping me-1"></i> CART
+                    {cartItemCount > 0 && (
+                      <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-cyan text-dark fw-bold" style={{boxShadow: '0 0 10px var(--neon-cyan)'}}>
+                        {cartItemCount}
+                      </span>
+                    )}
+                  </button>
+
+                  <!-- Tryout CTA Button -->
+                  <button className="cyber-btn btn-sm d-none d-xl-inline-flex" onClick={() => { playSound('click'); setIsTryoutOpen(true); }}>
+                    <i className="fa-solid fa-crosshair"></i> TRYOUTS
+                  </button>
+                </div>
+              </div>
+            </div>
+          </nav>
+
+          <section id="hero" className="hero-container text-center text-lg-start position-relative py-5">
+            <div className="hero-grid-bg"></div>
+            <div className="container position-relative" style={{zIndex: 2}}>
+              <div className="row align-items-center gy-5">
+                <div className="col-lg-7">
+                  <div className="d-inline-flex align-items-center gap-2 px-3 py-1 rounded-pill bg-dark border border-cyan mb-3">
+                    <span className="audio-visualizer-bar"></span>
+                    <span className="audio-visualizer-bar" style={{animationDelay: '0.2s'}}></span>
+                    <span className="audio-visualizer-bar" style={{animationDelay: '0.4s'}}></span>
+                    <span className="sub-heading text-glow-cyan fs-7">WORLD #1 RANKED ORGANIZATION</span>
+                  </div>
+
+                  <h1 className="glitch-title mb-3">
+                    DOMINATING THE <span className="text-glow-cyan">NEXT GEN</span> OF COMPETITIVE GAMING
+                  </h1>
+
+                  <p className="text-muted fs-5 mb-4 max-w-2xl">
+                    PS ESPORTS brings together elite world-class rosters in VALORANT, BGMI, CS2, League of Legends, and Apex. Driven by passion, tactical precision, and championship DNA.
+                  </p>
+
+                  <div className="d-flex flex-wrap gap-3 justify-content-center justify-content-lg-start">
+                    <a href="#rosters" className="cyber-btn fs-6" onClick={() => playSound('click')}>
+                      <i className="fa-solid fa-users"></i> EXPLORE ROSTERS
+                    </a>
+                    <button 
+                      className="cyber-btn cyber-btn-pink fs-6"
+                      onClick={() => { playSound('click'); setSelectedStream(MATCHES_DATA[0]); }}
+                    >
+                      <i className="fa-solid fa-circle-play"></i> WATCH LIVE STREAM
+                    </button>
+                    <a href="#merch" className="cyber-btn btn-outline-light fs-6" onClick={() => playSound('click')}>
+                      <i className="fa-solid fa-bag-shopping"></i> SHOP APPAREL
+                    </a>
+                  </div>
+
+                  <div className="row mt-5 pt-4 border-top border-secondary border-opacity-25 text-center text-lg-start">
+                    <div className="col-6 col-sm-3 mb-3">
+                      <div className="cyber-font fs-2 fw-black text-glow-cyan">$3.8M+</div>
+                      <div className="sub-heading text-muted fs-7">TOTAL WINNINGS</div>
+                    </div>
+                    <div className="col-6 col-sm-3 mb-3">
+                      <div className="cyber-font fs-2 fw-black text-glow-pink">18</div>
+                      <div className="sub-heading text-muted fs-7">WORLD TITLES</div>
+                    </div>
+                    <div className="col-6 col-sm-3 mb-3">
+                      <div className="cyber-font fs-2 fw-black text-glow-cyan">6.5M+</div>
+                      <div className="sub-heading text-muted fs-7">GLOBAL FANS</div>
+                    </div>
+                    <div className="col-6 col-sm-3 mb-3">
+                      <div className="cyber-font fs-2 fw-black text-glow-pink">8</div>
+                      <div className="sub-heading text-muted fs-7">PRO ROSTERS</div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Hero Spotlight Graphics Card -->
+                <div className="col-lg-5 text-center">
+                  <div className="glass-card p-4 position-relative">
+                    <div className="position-absolute top-0 end-0 m-3 badge bg-danger text-uppercase px-3 py-2 animate-pulse">
+                      🔴 LIVE MATCH IN PROGRESS
+                    </div>
+                    <img 
+                      src="https://images.unsplash.com/photo-1542751371-adc38448a05e?w=800&auto=format&fit=crop&q=80" 
+                      alt="Esports Gaming Setup" 
+                      className="img-fluid rounded border border-cyan mb-3" 
+                      style={{maxHeight: '320px', objectFit: 'cover', width: '100%'}}
+                    />
+                    <div className="d-flex justify-content-between align-items-center">
+                      <div className="text-start">
+                        <div className="sub-heading text-glow-cyan">VCT MASTERS GRAND FINALS</div>
+                        <div className="fs-5 fw-bold">PS ESPORTS vs SENTINELS</div>
+                      </div>
+                      <button 
+                        className="cyber-btn cyber-btn-pink btn-sm"
+                        onClick={() => { playSound('click'); setSelectedStream(MATCHES_DATA[0]); }}
+                      >
+                        WATCH
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section id="rosters" className="py-5 bg-dark position-relative">
+            <div className="container py-4">
+              <div className="text-center mb-5">
+                <div className="sub-heading text-glow-cyan">ELITE SQUADRON</div>
+                <h2 className="display-5 fw-bold">CHAMPIONSHIP ROSTERS</h2>
+                <div className="mx-auto bg-cyan" style={{height: '3px', width: '80px', boxShadow: '0 0 10px var(--neon-cyan)'}}></div>
+              </div>
+
+              <!-- Game Filters -->
+              <div className="d-flex flex-wrap justify-content-center gap-2 mb-5">
+                {['ALL', 'VALORANT', 'BGMI', 'CS2', 'LEAGUE OF LEGENDS', 'APEX'].map(game => (
+                  <button 
+                    key={game}
+                    className={`cyber-btn btn-sm ${rosterFilter === (game === 'LEAGUE OF LEGENDS' ? 'LOL' : game) ? '' : 'cyber-btn-pink'}`}
+                    style={{opacity: rosterFilter === (game === 'LEAGUE OF LEGENDS' ? 'LOL' : game) ? 1 : 0.65}}
+                    onClick={() => { playSound('click'); setRosterFilter(game === 'LEAGUE OF LEGENDS' ? 'LOL' : game); }}
+                  >
+                    {game}
+                  </button>
+                ))}
+              </div>
+
+              <!-- Roster Grid -->
+              <div className="row g-4">
+                {filteredRoster.map(player => (
+                  <div key={player.id} className="col-12 col-md-6 col-lg-4">
+                    <div className="roster-card" onClick={() => { playSound('click'); setSelectedPlayer(player); }}>
+                      <div className="player-avatar-wrapper">
+                        <img src={player.avatar} alt={player.ign} className="player-img" />
+                        <span className="role-badge">{player.role}</span>
+                        <div className="position-absolute bottom-0 start-0 p-3 w-100 bg-gradient-dark">
+                          <div className="sub-heading text-glow-cyan fs-7">{player.game}</div>
+                          <div className="cyber-font fs-3 fw-black text-white">{player.ign}</div>
+                          <div className="text-muted fs-7">{player.realName}</div>
+                        </div>
+                      </div>
+
+                      <div className="p-3 border-top border-secondary border-opacity-25">
+                        <div className="row text-center">
+                          <div className="col-6 border-end border-secondary border-opacity-25">
+                            <div className="text-muted fs-8">K/D RATIO</div>
+                            <div className="fw-bold fs-5 text-glow-cyan">{player.kd}</div>
+                          </div>
+                          <div className="col-6">
+                            <div className="text-muted fs-8">WIN RATE</div>
+                            <div className="fw-bold fs-5 text-glow-pink">{player.winRate}</div>
+                          </div>
+                        </div>
+                        <div className="mt-3 pt-2 border-top border-secondary border-opacity-25 d-flex justify-content-between align-items-center">
+                          <span className="text-muted fs-7">Signature: <strong className="text-white">{player.signature}</strong></span>
+                          <span className="text-glow-cyan fs-7">STATS <i className="fa-solid fa-arrow-right me-1"></i></span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+
+          <section id="matches" className="py-5 position-relative">
+            <div className="container py-4">
+              <div className="text-center mb-5">
+                <div className="sub-heading text-glow-pink">BATTLE LOG</div>
+                <h2 className="display-5 fw-bold">SCHEDULE & MATCHES</h2>
+                <div className="mx-auto bg-pink" style={{height: '3px', width: '80px', boxShadow: '0 0 10px var(--neon-pink)'}}></div>
+              </div>
+
+              <div className="row g-4">
+                {MATCHES_DATA.map(match => (
+                  <div key={match.id} className="col-12 col-lg-6">
+                    <div className={`match-card ${match.status === 'LIVE' ? 'live-match' : ''}`}>
+                      <div className="d-flex justify-content-between align-items-center mb-3">
+                        <span className="badge bg-dark border border-cyan text-glow-cyan">{match.tournament}</span>
+                        <span className={`fw-bold fs-7 ${match.status === 'LIVE' ? 'text-glow-pink animate-pulse' : 'text-muted'}`}>
+                          {match.time}
+                        </span>
+                      </div>
+
+                      <div className="row align-items-center text-center my-3">
+                        <div className="col-5">
+                          <div className="fs-1">{match.team1Logo}</div>
+                          <div className="cyber-font fw-bold fs-5 text-glow-cyan">{match.team1}</div>
+                        </div>
+                        <div className="col-2">
+                          <div className="cyber-font fs-3 fw-black text-glow-pink">{match.score}</div>
+                        </div>
+                        <div className="col-5">
+                          <div className="fs-1">{match.team2Logo}</div>
+                          <div className="cyber-font fw-bold fs-5">{match.team2}</div>
+                        </div>
+                      </div>
+
+                      <div className="mb-3">
+                        <div className="d-flex justify-content-between fs-8 text-muted mb-1">
+                          <span>PS Fan Hype: {match.hypePs}%</span>
+                          <span>Map Veto: {match.mapVeto}</span>
+                        </div>
+                        <div className="odds-bar-container">
+                          <div style={{width: `${match.hypePs}%`, background: 'var(--neon-cyan)'}}></div>
+                          <div style={{width: `${100 - match.hypePs}%`, background: 'var(--neon-pink)'}}></div>
+                        </div>
+                      </div>
+
+                      <div className="d-flex justify-content-end gap-2">
+                        {match.status === 'LIVE' && (
+                          <button 
+                            className="cyber-btn cyber-btn-pink btn-sm"
+                            onClick={() => { playSound('click'); setSelectedStream(match); }}
+                          >
+                            <i className="fa-solid fa-play"></i> WATCH STREAM
+                          </button>
+                        )}
+                        {match.status === 'UPCOMING' && (
+                          <button className="cyber-btn btn-sm" onClick={() => playSound('click')}>
+                            <i className="fa-solid fa-bell"></i> SET REMINDER
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+
+          <section id="trophies" className="py-5 bg-dark position-relative">
+            <div className="container py-4">
+              <div className="text-center mb-5">
+                <div className="sub-heading text-glow-cyan">HALL OF GLORY</div>
+                <h2 className="display-5 fw-bold">TROPHY CABINET</h2>
+                <div className="mx-auto bg-cyan" style={{height: '3px', width: '80px', boxShadow: '0 0 10px var(--neon-cyan)'}}></div>
+              </div>
+
+              <div className="row g-4">
+                {TROPHIES_DATA.map(trophy => (
+                  <div key={trophy.id} className="col-12 col-sm-6 col-lg-3">
+                    <div className="glass-card p-4 text-center h-100 border border-warning" style={{boxShadow: '0 0 15px rgba(255,215,0,0.15)'}}>
+                      <div className="display-3 mb-2">{trophy.icon}</div>
+                      <span className="badge bg-warning text-dark fw-bold mb-2">{trophy.year} WORLD TITLE</span>
+                      <h4 className="fs-5 fw-bold text-white mb-2">{trophy.title}</h4>
+                      <p className="text-muted fs-7 mb-2">Squad: <strong className="text-glow-cyan">{trophy.squad}</strong></p>
+                      <div className="p-2 rounded bg-black border border-secondary border-opacity-25">
+                        <div className="fs-8 text-muted">PRIZE POOL WON</div>
+                        <div className="cyber-font text-warning fw-bold fs-5">{trophy.prize}</div>
+                      </div>
+                      <div className="mt-2 fs-8 text-glow-pink">MVP: {trophy.mvp}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+
+          <section id="merch" className="py-5 position-relative">
+            <div className="container py-4">
+              <div className="text-center mb-5">
+                <div className="sub-heading text-glow-pink">OFFICIAL GEAR</div>
+                <h2 className="display-5 fw-bold">PS MERCH STORE</h2>
+                <div className="mx-auto bg-pink" style={{height: '3px', width: '80px', boxShadow: '0 0 10px var(--neon-pink)'}}></div>
+              </div>
+
+              <div className="row g-4">
+                {MERCH_DATA.map(item => (
+                  <div key={item.id} className="col-12 col-sm-6 col-lg-3">
+                    <div className="merch-card h-100 d-flex flex-column">
+                      <div className="merch-img-box">
+                        <span className="position-absolute top-0 start-0 m-3 badge bg-cyan text-dark fw-bold">{item.badge}</span>
+                        <img src={item.img} alt={item.name} className="merch-img" />
+                      </div>
+                      <div className="p-4 d-flex flex-column flex-grow-1">
+                        <div className="text-muted fs-8 text-uppercase mb-1">{item.category}</div>
+                        <h4 className="fs-6 fw-bold mb-2">{item.name}</h4>
+                        <p className="text-muted fs-7 mb-3 flex-grow-1">{item.description}</p>
+                        <div className="d-flex justify-content-between align-items-center pt-2 border-top border-secondary border-opacity-25">
+                          <div className="cyber-font fs-4 fw-black text-glow-cyan">${item.price}</div>
+                          <button 
+                            className="cyber-btn cyber-btn-pink btn-sm"
+                            onClick={() => addToCart(item)}
+                          >
+                            <i className="fa-solid fa-plus me-1"></i> ADD TO CART
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+
+          <section className="py-4 bg-black border-y border-secondary border-opacity-25">
+            <div className="text-center text-muted fs-8 text-uppercase mb-3" style={{letterSpacing: '3px'}}>GLOBAL OFFICIAL SPONSORS</div>
+            <div className="marquee-container">
+              <div className="marquee-content">
+                {['RAZER', 'NVIDIA GEFORCE', 'RED BULL', 'SECRETLAB', 'MONSTER ENERGY', 'LOGITECH G', 'ASUS ROG', 'INTEL'].map((sponsor, idx) => (
+                  <div key={idx} className="cyber-font fs-3 fw-black text-muted text-opacity-50 hover-glow">
+                    <i className="fa-solid fa-bolt text-glow-cyan me-2"></i>{sponsor}
+                  </div>
+                ))}
+                {['RAZER', 'NVIDIA GEFORCE', 'RED BULL', 'SECRETLAB', 'MONSTER ENERGY', 'LOGITECH G', 'ASUS ROG', 'INTEL'].map((sponsor, idx) => (
+                  <div key={`dup-${idx}`} className="cyber-font fs-3 fw-black text-muted text-opacity-50 hover-glow">
+                    <i className="fa-solid fa-bolt text-glow-cyan me-2"></i>{sponsor}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+
+          <section id="tryouts" className="py-5 bg-dark position-relative">
+            <div className="container py-4">
+              <div className="row justify-content-center">
+                <div className="col-12 col-lg-8">
+                  <div className="glass-card p-4 p-md-5">
+                    <div className="text-center mb-4">
+                      <div className="sub-heading text-glow-cyan">RECRUITMENT & PARTNERSHIPS</div>
+                      <h2 className="display-6 fw-bold">JOIN PS ESPORTS</h2>
+                      <p className="text-muted fs-7">Submit your profile for competitive pro tryouts, content creator signups, or brand sponsorship inquiries.</p>
+                    </div>
+
+                    <form onSubmit={handleTryoutSubmit}>
+                      <div className="row g-3">
+                        <div className="col-12 col-md-6">
+                          <label className="form-label text-muted fs-7">IN-GAME NAME (IGN) / NAME</label>
+                          <input 
+                            type="text" 
+                            className="form-control cyber-input" 
+                            placeholder="e.g. VIPER_007" 
+                            required
+                            value={tryoutForm.ign}
+                            onChange={(e) => setTryoutForm({...tryoutForm, ign: e.target.value})}
+                          />
+                        </div>
+                        <div className="col-12 col-md-6">
+                          <label className="form-label text-muted fs-7">APPLICATION TYPE</label>
+                          <select 
+                            className="form-select cyber-input"
+                            value={tryoutForm.role}
+                            onChange={(e) => setTryoutForm({...tryoutForm, role: e.target.value})}
+                          >
+                            <option value="Pro Player">Pro Athlete Tryouts</option>
+                            <option value="Content Creator">Content Creator / Streamer</option>
+                            <option value="Analyst / Coach">Analyst / Coach</option>
+                            <option value="Sponsor / Partner">Sponsor / Business Inquiry</option>
+                          </select>
+                        </div>
+                        <div className="col-12 col-md-6">
+                          <label className="form-label text-muted fs-7">GAME DIVISION</label>
+                          <select 
+                            className="form-select cyber-input"
+                            value={tryoutForm.game}
+                            onChange={(e) => setTryoutForm({...tryoutForm, game: e.target.value})}
+                          >
+                            <option value="VALORANT">VALORANT</option>
+                            <option value="BGMI">BGMI / PUBG Mobile</option>
+                            <option value="CS2">Counter-Strike 2</option>
+                            <option value="LoL">League of Legends</option>
+                            <option value="Apex">Apex Legends</option>
+                          </select>
+                        </div>
+                        <div className="col-12 col-md-6">
+                          <label className="form-label text-muted fs-7">CURRENT RANK / PEAK RATING</label>
+                          <input 
+                            type="text" 
+                            className="form-control cyber-input" 
+                            placeholder="e.g. Radiant Top 100 / Global Elite"
+                            value={tryoutForm.rank}
+                            onChange={(e) => setTryoutForm({...tryoutForm, rank: e.target.value})}
+                          />
+                        </div>
+                        <div className="col-12 col-md-6">
+                          <label className="form-label text-muted fs-7">EMAIL ADDRESS</label>
+                          <input 
+                            type="email" 
+                            className="form-control cyber-input" 
+                            placeholder="your.email@domain.com" 
+                            required
+                            value={tryoutForm.email}
+                            onChange={(e) => setTryoutForm({...tryoutForm, email: e.target.value})}
+                          />
+                        </div>
+                        <div className="col-12 col-md-6">
+                          <label className="form-label text-muted fs-7">DISCORD ID / HANDLE</label>
+                          <input 
+                            type="text" 
+                            className="form-control cyber-input" 
+                            placeholder="username#0000" 
+                            required
+                            value={tryoutForm.discord}
+                            onChange={(e) => setTryoutForm({...tryoutForm, discord: e.target.value})}
+                          />
+                        </div>
+                        <div className="col-12">
+                          <label className="form-label text-muted fs-7">HIGHLIGHT REEL / VOD LINK / PORTFOLIO</label>
+                          <input 
+                            type="url" 
+                            className="form-control cyber-input" 
+                            placeholder="https://youtube.com/watch?v=..." 
+                            value={tryoutForm.portfolio}
+                            onChange={(e) => setTryoutForm({...tryoutForm, portfolio: e.target.value})}
+                          />
+                        </div>
+                        <div className="col-12">
+                          <button type="submit" className="cyber-btn w-100 justify-content-center fs-6 mt-3">
+                            <i className="fa-solid fa-paper-plane"></i> SUBMIT APPLICATION
+                          </button>
+                        </div>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <footer className="py-5 bg-black border-top border-cyan text-muted">
+            <div className="container">
+              <div className="row g-4 mb-4">
+                <div className="col-12 col-lg-4">
+                  <div className="d-flex align-items-center gap-2 mb-3">
+                    <span className="cyber-font fw-black text-glow-cyan fs-3">PS</span>
+                    <span className="nav-logo-text">PS ESPORTS</span>
+                  </div>
+                  <p className="fs-7 text-muted">
+                    Premier global gaming and competitive esports organization. Built on competitive integrity, innovation, and championship culture.
+                  </p>
+                  <div className="d-flex gap-3 fs-4 mt-3">
+                    <a href="#" className="text-muted text-glow-cyan"><i className="fa-brands fa-twitch"></i></a>
+                    <a href="#" className="text-muted text-glow-pink"><i className="fa-brands fa-youtube"></i></a>
+                    <a href="#" className="text-muted text-glow-cyan"><i className="fa-brands fa-x-twitter"></i></a>
+                    <a href="#" className="text-muted text-glow-pink"><i className="fa-brands fa-instagram"></i></a>
+                    <a href="#" className="text-muted text-glow-cyan"><i className="fa-brands fa-discord"></i></a>
+                  </div>
+                </div>
+
+                <div className="col-6 col-lg-2">
+                  <h5 className="sub-heading text-white fs-6 mb-3">NAVIGATION</h5>
+                  <ul className="list-unstyled fs-7 space-y-2">
+                    <li><a href="#hero" className="text-muted text-decoration-none hover-glow">Home</a></li>
+                    <li><a href="#rosters" className="text-muted text-decoration-none hover-glow">Teams & Rosters</a></li>
+                    <li><a href="#matches" className="text-muted text-decoration-none hover-glow">Match Schedule</a></li>
+                    <li><a href="#trophies" className="text-muted text-decoration-none hover-glow">Hall of Fame</a></li>
+                  </ul>
+                </div>
+
+                <div className="col-6 col-lg-2">
+                  <h5 className="sub-heading text-white fs-6 mb-3">ORGANIZATION</h5>
+                  <ul className="list-unstyled fs-7 space-y-2">
+                    <li><a href="#tryouts" className="text-muted text-decoration-none hover-glow">Careers & Tryouts</a></li>
+                    <li><a href="#merch" className="text-muted text-decoration-none hover-glow">Apparel Store</a></li>
+                    <li><a href="#" className="text-muted text-decoration-none hover-glow">Press Kit</a></li>
+                    <li><a href="#" className="text-muted text-decoration-none hover-glow">Privacy Policy</a></li>
+                  </ul>
+                </div>
+
+                <div className="col-12 col-lg-4">
+                  <h5 className="sub-heading text-white fs-6 mb-3">HQ NEWSLETTER</h5>
+                  <p className="fs-7">Get exclusive match breakdown alerts, roster updates, and apparel drop codes.</p>
+                  <div className="input-group">
+                    <input type="email" className="form-control cyber-input" placeholder="Enter your email" />
+                    <button className="cyber-btn btn-sm" onClick={() => playSound('success')}>SUBSCRIBE</button>
+                  </div>
+                </div>
+              </div>
+
+              <div className="pt-4 border-top border-secondary border-opacity-25 d-flex flex-wrap justify-content-between align-items-center fs-8">
+                <div>&copy; 2026 PS ESPORTS ORGANIZATION. ALL RIGHTS RESERVED.</div>
+                <div className="text-glow-cyan">DESIGNED FOR CHAMPIONS</div>
+              </div>
+            </div>
+          </footer>
+
+          {selectedPlayer && (
+            <div className="modal show d-block cyber-modal" style={{background: 'rgba(0,0,0,0.85)'}} tabIndex="-1">
+              <div className="modal-dialog modal-dialog-centered modal-lg">
+                <div className="modal-content">
+                  <div className="modal-header border-bottom border-cyan">
+                    <h5 className="modal-title cyber-font text-glow-cyan">{selectedPlayer.ign} - PLAYER DOSSIER</h5>
+                    <button type="button" className="btn-close btn-close-white" onClick={() => setSelectedPlayer(null)}></button>
+                  </div>
+                  <div className="modal-body p-4">
+                    <div className="row g-4 align-items-center">
+                      <div className="col-12 col-md-5">
+                        <img src={selectedPlayer.avatar} alt={selectedPlayer.ign} className="img-fluid rounded border border-cyan" />
+                      </div>
+                      <div className="col-12 col-md-7">
+                        <span className="badge bg-cyan text-dark fw-bold mb-2">{selectedPlayer.game}</span>
+                        <h3 className="cyber-font fs-2 text-white mb-1">{selectedPlayer.ign}</h3>
+                        <div className="text-muted mb-3">{selectedPlayer.realName} • <strong className="text-glow-pink">{selectedPlayer.role}</strong></div>
+                        <p className="fs-7 text-light mb-3">{selectedPlayer.bio}</p>
+
+                        <div className="row text-center g-2 mb-3">
+                          <div className="col-4 p-2 bg-dark rounded border border-secondary border-opacity-25">
+                            <div className="fs-8 text-muted">K/D RATIO</div>
+                            <div className="fw-bold fs-5 text-glow-cyan">{selectedPlayer.kd}</div>
+                          </div>
+                          <div className="col-4 p-2 bg-dark rounded border border-secondary border-opacity-25">
+                            <div className="fs-8 text-muted">WIN RATE</div>
+                            <div className="fw-bold fs-5 text-glow-pink">{selectedPlayer.winRate}</div>
+                          </div>
+                          <div className="col-4 p-2 bg-dark rounded border border-secondary border-opacity-25">
+                            <div className="fs-8 text-muted">SIGNATURE</div>
+                            <div className="fw-bold fs-7 text-white truncate">{selectedPlayer.signature}</div>
+                          </div>
+                        </div>
+
+                        {selectedPlayer.gear && (
+                          <div className="p-3 rounded bg-dark border border-cyan border-opacity-25 fs-8">
+                            <div className="text-glow-cyan fw-bold mb-1"><i className="fa-solid fa-microchip me-1"></i> HARDWARE SETUP</div>
+                            <div>Mouse: {selectedPlayer.gear.mouse || selectedPlayer.gear.device}</div>
+                            {selectedPlayer.gear.keyboard && <div>Keyboard: {selectedPlayer.gear.keyboard}</div>}
+                            {selectedPlayer.gear.headset && <div>Headset: {selectedPlayer.gear.headset}</div>}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {selectedStream && (
+            <div className="modal show d-block cyber-modal" style={{background: 'rgba(0,0,0,0.9)'}} tabIndex="-1">
+              <div className="modal-dialog modal-dialog-centered modal-xl">
+                <div className="modal-content">
+                  <div className="modal-header border-bottom border-pink">
+                    <h5 className="modal-title cyber-font text-glow-pink">🔴 LIVE BROADCAST - {selectedStream.tournament}</h5>
+                    <button type="button" className="btn-close btn-close-white" onClick={() => setSelectedStream(null)}></button>
+                  </div>
+                  <div className="modal-body p-0">
+                    <div className="row g-0">
+                      <div className="col-12 col-lg-8 bg-black">
+                        <div className="ratio ratio-16x9">
+                          <iframe 
+                            src="https://www.youtube.com/embed/jfKfPfyJRdk?autoplay=1" 
+                            title="Esports Stream" 
+                            allowFullScreen
+                          ></iframe>
+                        </div>
+                      </div>
+                      <div className="col-12 col-lg-4 bg-dark p-3 d-flex flex-column" style={{height: '420px'}}>
+                        <div className="fw-bold text-glow-cyan mb-2 border-bottom border-secondary border-opacity-25 pb-2">
+                          <i className="fa-solid fa-comments me-1"></i> LIVE MATCH CHAT
+                        </div>
+                        <div className="flex-grow-1 overflow-auto fs-8 space-y-2 mb-3">
+                          <div><strong className="text-cyan">CyberFan99:</strong> PS ESPORTS IS UNSTOPPABLE TODAY!</div>
+                          <div><strong className="text-pink">ValorantGod:</strong> VIPER 1v3 CLUTCH WAS INSANE 🔥</div>
+                          <div><strong className="text-warning">NeonNinja:</strong> SEN needs a timeout asap</div>
+                          <div><strong className="text-cyan">AcesHigh:</strong> GG map 3 for PS!</div>
+                          <div><strong className="text-light">ProAnalyst:</strong> Clean site executes on Haven.</div>
+                        </div>
+                        <div className="input-group">
+                          <input type="text" className="form-control cyber-input fs-8" placeholder="Send chat message..." />
+                          <button className="cyber-btn cyber-btn-pink btn-sm">SEND</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          <div className={`cart-backdrop ${isCartOpen ? 'open' : ''}`} onClick={() => setIsCartOpen(false)}></div>
+          <div className={`cart-drawer ${isCartOpen ? 'open' : ''}`}>
+            <div className="p-4 border-bottom border-cyan d-flex justify-content-between align-items-center">
+              <h4 className="cyber-font text-glow-cyan m-0"><i className="fa-solid fa-bag-shopping me-2"></i> YOUR CART</h4>
+              <button className="btn-close btn-close-white" onClick={() => setIsCartOpen(false)}></button>
+            </div>
+
+            <div className="p-4 flex-grow-1 overflow-auto">
+              {cart.length === 0 ? (
+                <div className="text-center text-muted my-5">
+                  <i className="fa-solid fa-cart-flatbed fs-1 mb-3 text-glow-cyan"></i>
+                  <p>Your gear bag is empty.</p>
+                </div>
+              ) : (
+                cart.map((item, idx) => (
+                  <div key={`${item.id}-${item.size}`} className="d-flex align-items-center gap-3 mb-3 p-2 rounded bg-dark border border-secondary border-opacity-25">
+                    <img src={item.img} alt={item.name} style={{width: '60px', height: '60px', objectFit: 'contain'}} />
+                    <div className="flex-grow-1">
+                      <div className="fw-bold fs-7 text-white">{item.name}</div>
+                      <div className="text-muted fs-8">Size: {item.size} • ${item.price}</div>
+                      <div className="d-flex align-items-center gap-2 mt-1">
+                        <button className="btn btn-sm btn-outline-secondary py-0 px-2 text-white" onClick={() => updateCartQty(item.id, item.size, -1)}>-</button>
+                        <span className="fs-7 fw-bold">{item.qty}</span>
+                        <button className="btn btn-sm btn-outline-secondary py-0 px-2 text-white" onClick={() => updateCartQty(item.id, item.size, 1)}>+</button>
+                      </div>
+                    </div>
+                    <div className="cyber-font text-glow-pink fw-bold">${(item.price * item.qty).toFixed(2)}</div>
+                  </div>
+                ))
+              )}
+            </div>
+
+            <div className="p-4 border-top border-cyan bg-black">
+              <div className="d-flex justify-content-between fs-5 fw-bold mb-3">
+                <span>SUBTOTAL:</span>
+                <span className="cyber-font text-glow-cyan">${cartTotal.toFixed(2)}</span>
+              </div>
+              <button 
+                className="cyber-btn cyber-btn-pink w-100 justify-content-center"
+                disabled={cart.length === 0}
+                onClick={() => { playSound('success'); setIsCartOpen(false); setIsCheckoutOpen(true); }}
+              >
+                PROCEED TO CHECKOUT
+              </button>
+            </div>
+          </div>
+
+          {isCheckoutOpen && (
+            <div className="modal show d-block cyber-modal" style={{background: 'rgba(0,0,0,0.85)'}} tabIndex="-1">
+              <div className="modal-dialog modal-dialog-centered">
+                <div className="modal-content text-center p-4">
+                  <div className="display-1 text-glow-cyan mb-3"><i className="fa-solid fa-circle-check"></i></div>
+                  <h3 className="cyber-font text-white mb-2">ORDER CONFIRMED!</h3>
+                  <p className="text-muted fs-7 mb-4">Thank you for supporting PS ESPORTS. Your championship gear is being prepared for dispatch.</p>
+                  <button className="cyber-btn mx-auto" onClick={() => { setCart([]); setIsCheckoutOpen(false); }}>
+                    RETURN TO HEADQUARTERS
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {tryoutSuccessToast && (
+            <div className="position-fixed bottom-0 end-0 p-3" style={{zIndex: 3000}}>
+              <div className="toast show bg-dark text-white border border-cyan shadow-lg">
+                <div className="toast-header bg-black text-glow-cyan border-bottom border-cyan">
+                  <i className="fa-solid fa-crosshair me-2"></i>
+                  <strong className="me-auto cyber-font">APPLICATION RECEIVED</strong>
+                  <button type="button" className="btn-close btn-close-white" onClick={() => setTryoutSuccessToast(false)}></button>
+                </div>
+                <div className="toast-body fs-7">
+                  Your profile has been logged in the PS Esports recruitment mainframe. Scout managers will reach out on Discord/Email!
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

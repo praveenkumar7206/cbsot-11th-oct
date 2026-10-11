@@ -1,0 +1,42 @@
+prompt engineering , 7 september 2026
+
+1.(a) weak prompt 
+explain me list of python , i am new in pyhton but javig basic knowlege of python of starating, explain me in details
+
+1. {b} strong prompt
+  1.act as a python tutor which have a experince of 10 years in teaching python who knows best way to teach anyone
+  2.u have to expain me list of python
+  3. i am not a total beginner , i know basic of pyhton like i knowtill for and while loop , so explain me in a deatiled way soo i 
+     able to understands , and give me example of each thing like using code output and input and also include real life examplesto learn concepts
+  4. dont give me heavy text data , no filler words
+  5. for output use emojhis and signs , ans also in piints , and alos use comparison table whwrewver u neeeded and whnever u needed also use iamges
+    but dont make all out put in image
+
+2.(a) weak prompt
+create me a professional resume 
+
+(b) strong prompt 
+1.act as a hiring manager of big comapanies like blackrock , google , microfsoft etc many more 
+2.create my professional resume for applying in these comapsnmies so my resume will shortlist each and every time
+3.soo make resme , ask eacha nd every informatin u want to be in resume ask me 
+4. dont give unnessasay info in my resume   , u have to reaearch what is necessary and unnecessary
+5.my resume must be like top resume which never rejects
+6. u can research on top resume to make mine
+
+3. (a) weak prompt
+debug my pyhtion code that i give to u 
+
+(b) strong prompt
+
+
+
+4. (a>) weak prompt 
+hey my interview , is tomorro , so act like interveiewer and ask me questions
+
+(b) strong prompt 
+1. hey act a interviewer of top tech comppanies like google microsoft
+2. u have to take my interview , so i can practice for my actual interview tomorrow , my interview is for role backend developer 
+3. so first of all do a deep reseach on multipe past interviews happened in top tech companies
+4. after deep research we start6 a intrerview so u starts ask me quesion one by one , like actual interviewer questions ask
+5. dont make my interview easy , m ake my inrterview that actaul interviwes happendd , also make little togh so i will ready for worse
+6. after our intervwiew , completes point down all my porblemns and mistakes i make , small and big and each porblems and mistakes

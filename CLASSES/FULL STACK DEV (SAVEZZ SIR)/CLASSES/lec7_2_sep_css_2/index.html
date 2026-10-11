@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Daily Team Tracker</title>
+  
+  <!-- Fonts & Confetti CDN -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+
+  <style>
+    :root {
+      --bg-base: #07090e;
+      --card-bg: rgba(18, 22, 34, 0.75);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --card-hover: rgba(255, 255, 255, 0.14);
+      --text-main: #f0f3f8;
+      --text-muted: #8b94a5;
+      --accent-cyan: #00f2fe;
+      --accent-blue: #4facfe;
+      --accent-purple: #7928ca;
+      --accent-gold: #ffd700;
+      --accent-fire: #ff416c;
+      --radius: 16px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background: radial-gradient(circle at 50% 0%, #151a30 0%, #07090e 75%);
+      color: var(--text-main);
+      min-height: 100vh;
+      padding: 32px 16px;
+      display: flex;
+      justify-content: center;
+      overflow-x: hidden;
+    }
+
+    /* Ambient background glow orb */
+    .glow-orb {
+      position: fixed;
+      top: -100px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 500px;
+      height: 350px;
+      background: radial-gradient(circle, rgba(79, 172, 254, 0.15) 0%, transparent 70%);
+      filter: blur(60px);
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 620px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Header */
+    .header {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+
+    .badge-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 14px;
+      border-radius: 999px;
+      background: rgba(0, 242, 254, 0.08);
+      border: 1px solid rgba(0, 242, 254, 0.3);
+      color: var(--accent-cyan);
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+      animation: pulseGlow 3s infinite alternate;
+    }
+
+    @keyframes pulseGlow {
+      from { box-shadow: 0 0 10px rgba(0, 242, 254, 0.2); }
+      to { box-shadow: 0 0 22px rgba(0, 242, 254, 0.5); }
+    }
+
+    h1 {
+      font-size: 2rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      background: linear-gradient(135deg, #ffffff 40%, #8b94a5 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 6px;
+    }
+
+    .subtitle {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    /* Glass Card */
+    .glass-card {
+      background: var(--card-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      padding: 24px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+      margin-bottom: 22px;
+      transition: border 0.3s ease;
+    }
+
+    .glass-card:hover {
+      border-color: var(--card-hover);
+    }
+
+    /* Form Fields */
+    .field {
+      margin-bottom: 18px;
+    }
+
+    label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    input, select {
+      width: 100%;
+      background: rgba(10, 13, 20, 0.8);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 13px 16px;
+      color: #fff;
+      font-size: 0.95rem;
+      outline: none;
+      transition: all 0.25s ease;
+    }
+
+    input:focus, select:focus {
+      border-color: var(--accent-blue);
+      box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.2);
+      background: rgba(15, 20, 32, 0.95);
+    }
+
+    .row {
+      display: flex;
+      gap: 14px;
+    }
+
+    .row .field {
+      flex: 1;
+    }
+
+    /* Dynamic Reaction Meter */
+    .tier-meter {
+      border-radius: 12px;
+      padding: 12px 16px;
+      margin-top: 6px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      border: 1px solid transparent;
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .tier-icon {
+      font-size: 1.4rem;
+      line-height: 1;
+    }
+
+    .tier-0 { background: rgba(255, 255, 255, 0.03); color: var(--text-muted); border-color: rgba(255, 255, 255, 0.05); }
+    .tier-1 { background: rgba(79, 172, 254, 0.12); color: #70baff; border-color: rgba(79, 172, 254, 0.3); }
+    .tier-2 { background: rgba(0, 242, 254, 0.15); color: #43f3ff; border-color: rgba(0, 242, 254, 0.4); }
+    .tier-3 { background: rgba(255, 65, 108, 0.15); color: #ff6b8b; border-color: rgba(255, 65, 108, 0.4); box-shadow: 0 0 15px rgba(255, 65, 108, 0.2); }
+    .tier-4 { background: linear-gradient(90deg, rgba(255, 215, 0, 0.18), rgba(121, 40, 202, 0.2)); color: #ffd700; border-color: rgba(255, 215, 0, 0.5); box-shadow: 0 0 25px rgba(255, 215, 0, 0.35); animation: rainbowGaze 4s infinite alternate; }
+
+    /* Submit Button with Hover Aura */
+    .btn-submit {
+      width: 100%;
+      padding: 15px;
+      border: none;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
+      color: #030812;
+      font-size: 1rem;
+      font-weight: 800;
+      letter-spacing: 0.02em;
+      cursor: pointer;
+      box-shadow: 0 8px 25px rgba(0, 242, 254, 0.35);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
+      overflow: hidden;
+      margin-top: 6px;
+    }
+
+    .btn-submit:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 35px rgba(0, 242, 254, 0.55);
+    }
+
+    .btn-submit:active {
+      transform: translateY(1px);
+    }
+
+    .btn-submit:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* MVP Highlight Card */
+    .mvp-banner {
+      background: linear-gradient(135deg, rgba(255, 215, 0, 0.12), rgba(255, 107, 0, 0.08));
+      border: 1px solid rgba(255, 215, 0, 0.3);
+      border-radius: 14px;
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .mvp-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .mvp-avatar {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #ffd700, #ff8c00);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+    }
+
+    .mvp-title {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: #ffd700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .mvp-name {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .mvp-hours {
+      text-align: right;
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: #ffd700;
+    }
+
+    .mvp-hours span {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: rgba(255, 215, 0, 0.8);
+      display: block;
+    }
+
+    /* Activity Feed Items */
+    .feed-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .feed-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+    }
+
+    .btn-ghost {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--card-border);
+      color: var(--text-muted);
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-ghost:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+    }
+
+    .feed-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .feed-item {
+      background: rgba(12, 16, 26, 0.6);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 14px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all 0.25s ease;
+      animation: fadeIn 0.4s ease forwards;
+    }
+
+    .feed-item:hover {
+      transform: translateX(4px);
+      border-color: var(--card-hover);
+      background: rgba(18, 24, 38, 0.8);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .feed-left {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      max-width: 72%;
+    }
+
+    .feed-author {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .feed-topic {
+      font-size: 0.83rem;
+      color: var(--text-muted);
+      line-height: 1.3;
+      word-break: break-word;
+    }
+
+    .feed-right {
+      text-align: right;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 4px;
+    }
+
+    .hour-badge {
+      background: rgba(0, 242, 254, 0.12);
+      color: var(--accent-cyan);
+      border: 1px solid rgba(0, 242, 254, 0.3);
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .feed-date {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+    }
+
+    /* Modal Celebration popup */
+    #celebrationModal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.7);
+      backdrop-filter: blur(8px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      padding: 16px;
+    }
+
+    .modal-box {
+      background: #111624;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 20px;
+      padding: 32px 24px;
+      text-align: center;
+      max-width: 380px;
+      width: 100%;
+      box-shadow: 0 25px 50px rgba(0,0,0,0.8);
+      animation: popIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes popIn {
+      from { transform: scale(0.85); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .modal-emoji { font-size: 3.5rem; margin-bottom: 12px; }
+    .modal-title { font-size: 1.4rem; font-weight: 800; color: #fff; margin-bottom: 6px; }
+    .modal-desc { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 22px; }
+  </style>
+</head>
+<body>
+
+  <div class="glow-orb"></div>
+
+  <div class="container">
+    <!-- Header -->
+    <div class="header">
+      <div class="badge-pill">⚡ Live Tracker , see what ur teammate submits</div>
+      <h1>Next Gen Devs API</h1>
+      <p class="subtitle">Lock in your hours. Stay accountable. Dominate together.</p>
+    </div>
+
+    <!-- Daily MVP Spotlight Banner -->
+    <div class="mvp-banner" id="mvpBanner" style="display: none;">
+      <div class="mvp-info">
+        <div class="mvp-avatar">👑</div>
+        <div>
+          <div class="mvp-title">Today's Grinder of the Day</div>
+          <div class="mvp-name" id="mvpName">—</div>
+        </div>
+      </div>
+      <div class="mvp-hours">
+        <span id="mvpHours">0 hrs</span>
+        <span>Logged Today</span>
+      </div>
+    </div>
+
+    <!-- Main Entry Form -->
+    <div class="glass-card">
+      <form id="trackerForm">
+        <div class="field">
+          <label for="name">Teammate</label>
+          <select id="name" required>
+            <option value="" disabled selected>Select who you are</option>
+            <option value="AARAV">AARAV</option>
+            <option value="DAKSH AGARWAL">DAKSH AGARWAL</option>
+            <option value="ROHIT SINGH">ROHIT SINGH</option>
+            <option value="PRAVEEN KUMAR">PRAVEEN KUMAR</option>
+            <option value="UDAY GUPTA">UDAY GUPTA</option>
+          </select>
+        </div>
+
+        <div class="row">
+          <div class="field">
+            <label for="date">Date</label>
+            <input type="date" id="date" required />
+          </div>
+          <div class="field">
+            <label for="hours">Hours Put In</label>
+            <input type="number" id="hours" step="0.5" min="0.5" max="24" placeholder="e.g. 3.5" required />
+          </div>
+        </div>
+
+        <!-- Real-time Dynamic Reaction Feedback -->
+        <div class="field">
+          <div id="tierMeter" class="tier-meter tier-0">
+            <span class="tier-icon" id="tierIcon">⏳</span>
+            <div>
+              <div id="tierTitle">Awaiting Hours...</div>
+              <div style="font-size: 0.72rem; opacity: 0.8;" id="tierDesc">Enter your work duration to evaluate momentum</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="topic">Topic / What Did You Build?</label>
+          <input type="text" id="topic" placeholder="e.g., Solved DP Graph Algorithms on HackerRank" required />
+        </div>
+
+        <button type="submit" id="submitBtn" class="btn-submit">Log Session & Submit</button>
+      </form>
+    </div>
+
+    <!-- Live Team Feed -->
+    <div class="glass-card">
+      <div class="feed-header">
+        <div class="feed-title">HISTORY</div>
+        <button class="btn-ghost" onclick="fetchFeed()">↻ Sync</button>
+      </div>
+
+      <div class="feed-list" id="feedList">
+        <div style="text-align: center; color: var(--text-muted); padding: 24px 0;">
+          Connecting to cloud records...
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Celebration Popup Modal -->
+  <div id="celebrationModal">
+    <div class="modal-box">
+      <div class="modal-emoji" id="modalEmoji">🔥</div>
+      <div class="modal-title" id="modalTitle">Session Recorded!</div>
+      <div class="modal-desc" id="modalDesc">Your progress has been permanently saved to Google Sheets.</div>
+      <button class="btn-submit" onclick="closeModal()">Keep Cooking</button>
+    </div>
+  </div>
+
+  <script>
+    // ==========================================
+    // 1. PASTE YOUR GOOGLE SCRIPT URL HERE:
+    // ==========================================
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzERtKgs1w3bj5zvZshwPf1zN0B-hzJpAuFHjBc_cvXeCapEacLczoDWs_ZSwFX1zcD9Q/exec";
+
+    // Pre-fill today's local date
+    document.getElementById('date').value = new Date().toISOString().split('T')[0];
+
+    const hoursInput = document.getElementById('hours');
+    const tierMeter = document.getElementById('tierMeter');
+    const tierIcon = document.getElementById('tierIcon');
+    const tierTitle = document.getElementById('tierTitle');
+    const tierDesc = document.getElementById('tierDesc');
+    const submitBtn = document.getElementById('submitBtn');
+
+    // ==========================================
+    // 2. REAL-TIME REACTION ENGINE
+    // ==========================================
+    hoursInput.addEventListener('input', () => {
+      const val = parseFloat(hoursInput.value);
+      tierMeter.className = 'tier-meter';
+
+      if (isNaN(val) || val <= 0) {
+        tierMeter.classList.add('tier-0');
+        tierIcon.innerText = '⏳';
+        tierTitle.innerText = 'Awaiting Hours...';
+        tierDesc.innerText = 'Enter your work duration to evaluate momentum';
+      } else if (val < 2) {
+        tierMeter.classList.add('tier-1');
+        tierIcon.innerText = '🌱';
+        tierTitle.innerText = 'Warm-up Mode';
+        tierDesc.innerText = 'Solid start! Consistency compound interest starts here.';
+      } else if (val < 4) {
+        tierMeter.classList.add('tier-2');
+        tierIcon.innerText = '⚡';
+        tierTitle.innerText = 'Locked In / Flow State';
+        tierDesc.innerText = 'High yield deep work session. Great pace!';
+      } else if (val < 6) {
+        tierMeter.classList.add('tier-3');
+        tierIcon.innerText = '🔥';
+        tierTitle.innerText = 'BEAST MODE UNLOCKED';
+        tierDesc.innerText = 'Relentless execution. You are outworking the pack.';
+      } else {
+        tierMeter.classList.add('tier-4');
+        tierIcon.innerText = '👑';
+        tierTitle.innerText = 'GOD TIER GRIND';
+        tierDesc.innerText = 'Absolute mastery. Today was legendary.';
+      }
+    });
+
+    // ==========================================
+    // 3. FIREWORKS & CONFETTI GENERATOR
+    // ==========================================
+    function triggerCelebration(hours) {
+      if (hours >= 4) {
+        // Grand Cannon Fireworks
+        confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+        setTimeout(() => {
+          confetti({ particleCount: 120, spread: 100, origin: { x: 0.2, y: 0.7 } });
+          confetti({ particleCount: 120, spread: 100, origin: { x: 0.8, y: 0.7 } });
+        }, 300);
+      } else {
+        // Clean crisp burst
+        confetti({ particleCount: 50, spread: 60, origin: { y: 0.7 } });
+      }
+    }
+
+    // ==========================================
+    // 4. SUBMIT FORM TO SPREADSHEET
+    // ==========================================
+    document.getElementById('trackerForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const hours = parseFloat(hoursInput.value);
+      const name = document.getElementById('name').value;
+      const topic = document.getElementById('topic').value;
+
+      submitBtn.disabled = true;
+      submitBtn.innerText = "Transmitting to Database...";
+
+      const payload = {
+        name: name,
+        date: document.getElementById('date').value,
+        hours: hours,
+        topic: topic
+      };
+
+      try {
+        await fetch(SCRIPT_URL, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        // Trigger Confetti and Show Popup
+        triggerCelebration(hours);
+        showModal(name, hours);
+
+        // Reset inputs
+        document.getElementById('topic').value = "";
+        hoursInput.value = "";
+        hoursInput.dispatchEvent(new Event('input'));
+
+        // Refresh feed after saving
+        setTimeout(fetchFeed, 1800);
+
+      } catch (err) {
+        alert("Failed to reach server. Please check internet connection.");
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerText = "Log Session & Submit";
+      }
+    });
+
+    // ==========================================
+    // 5. FETCH FEED & COMPUTE MVP
+    // ==========================================
+    async function fetchFeed() {
+      const feedList = document.getElementById('feedList');
+      try {
+        const res = await fetch(SCRIPT_URL);
+        const data = await res.json();
+
+        if (!data || data.length === 0) {
+          feedList.innerHTML = `<div style="text-align: center; color: var(--text-muted); padding: 18px;">No sessions logged yet. Be the first!</div>`;
+          return;
+        }
+
+        // Render feed items
+        feedList.innerHTML = data.slice(0, 10).map(item => `
+          <div class="feed-item">
+            <div class="feed-left">
+              <div class="feed-author">${item.name}</div>
+              <div class="feed-topic">${item.topic}</div>
+            </div>
+            <div class="feed-right">
+              <div class="hour-badge">${item.hours}h</div>
+              <div class="feed-date">${item.date}</div>
+            </div>
+          </div>
+        `).join('');
+
+        // Calculate Daily MVP (Top Grinder Today)
+        calculateMVP(data);
+
+      } catch (err) {
+        feedList.innerHTML = `<div style="text-align: center; color: #ff6b8b; padding: 14px;">Error syncing logs. Tap Sync above.</div>`;
+      }
+    }
+
+    function calculateMVP(data) {
+      const todayStr = document.getElementById('date').value;
+      const todayLogs = data.filter(item => item.date === todayStr);
+
+      if (todayLogs.length === 0) {
+        document.getElementById('mvpBanner').style.display = 'none';
+        return;
+      }
+
+      // Group hours by name
+      const totals = {};
+      todayLogs.forEach(log => {
+        totals[log.name] = (totals[log.name] || 0) + parseFloat(log.hours || 0);
+      });
+
+      let topGrinder = null;
+      let maxHours = 0;
+
+      for (const [name, hours] of Object.entries(totals)) {
+        if (hours > maxHours) {
+          maxHours = hours;
+          topGrinder = name;
+        }
+      }
+
+      if (topGrinder && maxHours > 0) {
+        document.getElementById('mvpBanner').style.display = 'flex';
+        document.getElementById('mvpName').innerText = topGrinder;
+        document.getElementById('mvpHours').innerText = `${maxHours} hrs`;
+      }
+    }
+
+    // Modal helpers
+    function showModal(name, hours) {
+      const modal = document.getElementById('celebrationModal');
+      const emoji = document.getElementById('modalEmoji');
+      const title = document.getElementById('modalTitle');
+      const desc = document.getElementById('modalDesc');
+
+      if (hours >= 5) {
+        emoji.innerText = "👑";
+        title.innerText = `${name}, You Are Unreal!`;
+        desc.innerText = `${hours} hours logged. You just dominated today's leaderboard.`;
+      } else if (hours >= 3) {
+        emoji.innerText = "🔥";
+        title.innerText = "Huge Grind, " + name + "!";
+        desc.innerText = `${hours} hours locked in. Keep this momentum rolling!`;
+      } else {
+        emoji.innerText = "⚡";
+        title.innerText = "Entry Logged!";
+        desc.innerText = `Nice work, ${name}. Every step counts towards mastery.`;
+      }
+
+      modal.style.display = 'flex';
+    }
+
+    function closeModal() {
+      document.getElementById('celebrationModal').style.display = 'none';
+    }
+
+    // Initialize Feed
+    fetchFeed();
+  </script>
+</body>
+</html>

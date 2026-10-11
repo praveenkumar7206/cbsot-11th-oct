@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cyber Strike 3D Fighter</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: #050510;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            user-select: none;
+        }
+
+        #ui-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        #top-bar {
+            display: flex;
+            justify-content: space-between;
+            padding: 20px 40px;
+            box-sizing: border-box;
+            width: 100%;
+            background: linear-gradient(180deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 100%);
+        }
+
+        .player-info {
+            width: 40%;
+            max-width: 400px;
+        }
+
+        .player-name {
+            color: #fff;
+            font-size: 1.5rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+            margin-bottom: 8px;
+            letter-spacing: 2px;
+        }
+
+        .health-bar-bg {
+            background-color: rgba(50, 50, 50, 0.8);
+            width: 100%;
+            height: 30px;
+            border: 3px solid #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .health-bar-fill {
+            height: 100%;
+            width: 100%;
+            transition: width 0.15s ease-out;
+        }
+
+        #p1-info { text-align: left; }
+        #p1-health { 
+            background: linear-gradient(90deg, #0055ff, #00bbff);
+            box-shadow: 0 0 10px #0088ff;
+        }
+
+        #p2-info { text-align: right; }
+        #p2-health { 
+            background: linear-gradient(90deg, #ff0055, #ff5500); 
+            box-shadow: 0 0 10px #ff0055;
+            float: right;
+        }
+
+        .controls-hint {
+            color: #aaa;
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+
+        #game-over-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            pointer-events: auto;
+            backdrop-filter: blur(5px);
+        }
+
+        #winner-text {
+            color: #fff;
+            font-size: 4rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            text-shadow: 0 0 20px gold;
+            margin-bottom: 40px;
+            letter-spacing: 4px;
+            text-align: center;
+        }
+
+        #restart-btn {
+            background: linear-gradient(45deg, #00ffcc, #0088ff);
+            color: #000;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 0 20px rgba(0, 136, 255, 0.5);
+        }
+
+        #restart-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 30px rgba(0, 255, 204, 0.8);
+        }
+    </style>
+</head>
+<body>
+
+    <div id="ui-layer">
+        <div id="top-bar">
+            <div class="player-info" id="p1-info">
+                <div class="player-name">PS ESPORTS</div>
+                <div class="health-bar-bg">
+                    <div id="p1-health" class="health-bar-fill"></div>
+                </div>
+                <div class="controls-hint">Move: W, A, S, D | Attack: SPACE</div>
+            </div>
+
+            <div class="player-info" id="p2-info">
+                <div class="player-name">MAJESTIC ZERO</div>
+                <div class="health-bar-bg">
+                    <div id="p2-health" class="health-bar-fill"></div>
+                </div>
+                <div class="controls-hint">Move: Arrows | Attack: ENTER</div>
+            </div>
+        </div>
+    </div>
+
+    <div id="game-over-screen">
+        <div id="winner-text">PLAYER WINS!</div>
+        <button id="restart-btn">Play Again</button>
+    </div>
+
+    <script>
+        // Setup Scene, Camera, Renderer
+        const scene = new THREE.Scene();
+        scene.fog = new THREE.Fog(0x050510, 20, 50);
+
+        const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.set(0, 18, 25);
+        camera.lookAt(0, 0, 0);
+
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        document.body.appendChild(renderer.domElement);
+
+        // Lighting
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
+        scene.add(ambientLight);
+
+        const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
+        dirLight.position.set(10, 20, 10);
+        dirLight.castShadow = true;
+        dirLight.shadow.camera.left = -15;
+        dirLight.shadow.camera.right = 15;
+        dirLight.shadow.camera.top = 15;
+        dirLight.shadow.camera.bottom = -15;
+        scene.add(dirLight);
+
+        const spotLight = new THREE.SpotLight(0x00e5ff, 1);
+        spotLight.position.set(0, 20, 0);
+        spotLight.angle = Math.PI / 4;
+        spotLight.penumbra = 0.5;
+        scene.add(spotLight);
+
+        // Arena Floor
+        const floorGeometry = new THREE.PlaneGeometry(30, 30);
+        const floorMaterial = new THREE.MeshStandardMaterial({ 
+            color: 0x11111a,
+            roughness: 0.8,
+            metalness: 0.2
+        });
+        const floor = new THREE.Mesh(floorGeometry, floorMaterial);
+        floor.rotation.x = -Math.PI / 2;
+        floor.receiveShadow = true;
+        scene.add(floor);
+
+        // Arena Grid Pattern
+        const gridHelper = new THREE.GridHelper(30, 30, 0x00e5ff, 0x333344);
+        gridHelper.position.y = 0.01;
+        scene.add(gridHelper);
+
+        // Bounds Box for collision visuals
+        const boundsGeo = new THREE.BoxGeometry(30, 2, 30);
+        const boundsMat = new THREE.MeshBasicMaterial({ color: 0x00e5ff, wireframe: true, transparent: true, opacity: 0.1 });
+        const boundsBox = new THREE.Mesh(boundsGeo, boundsMat);
+        boundsBox.position.y = 1;
+        scene.add(boundsBox);
+
+        class Player {
+            constructor(color, x, z, startRotation) {
+                this.health = 100;
+                this.speed = 0.2;
+                this.isAttacking = false;
+                this.attackCooldown = 0;
+                this.attackDuration = 15; // frames
+                this.attackTimer = 0;
+                this.hasHit = false;
+                
+                // Group to hold body parts
+                this.mesh = new THREE.Group();
+                this.mesh.position.set(x, 1, z);
+                
+                // Main Body
+                const bodyGeo = new THREE.BoxGeometry(1.2, 2, 1.2);
+                const bodyMat = new THREE.MeshStandardMaterial({ 
+                    color: color, 
+                    roughness: 0.4, 
+                    metalness: 0.6,
+                    emissive: color,
+                    emissiveIntensity: 0.2
+                });
+                this.bodyMesh = new THREE.Mesh(bodyGeo, bodyMat);
+                this.bodyMesh.castShadow = true;
+                this.bodyMesh.receiveShadow = true;
+                this.mesh.add(this.bodyMesh);
+
+                // Visor (Front indicator)
+                const visorGeo = new THREE.BoxGeometry(0.9, 0.4, 0.2);
+                const visorMat = new THREE.MeshStandardMaterial({ color: 0xffffff, emissive: 0xffffff, emissiveIntensity: 0.8 });
+                const visor = new THREE.Mesh(visorGeo, visorMat);
+                visor.position.set(0, 0.4, 0.6); // Front relative to body
+                this.mesh.add(visor);
+
+                // Weapon / Fist
+                const fistGeo = new THREE.BoxGeometry(0.8, 0.8, 1.5);
+                const fistMat = new THREE.MeshStandardMaterial({ color: 0xffffff, emissive: 0xffffff, emissiveIntensity: 0.5 });
+                this.fist = new THREE.Mesh(fistGeo, fistMat);
+                this.fist.position.set(0, 0, 0); // Hidden inside body
+                this.fist.visible = false;
+                this.mesh.add(this.fist);
+
+                this.mesh.rotation.y = startRotation;
+                scene.add(this.mesh);
+            }
+
+            update(keys, controls, opponent) {
+                if (this.health <= 0) return;
+
+                // Cooldown logic
+                if (this.attackCooldown > 0) this.attackCooldown--;
+
+                // Movement logic
+                let moved = false;
+                const prevPos = this.mesh.position.clone();
+                
+                if (!this.isAttacking) {
+                    if (keys[controls.up]) { this.mesh.translateZ(-this.speed); moved = true; }
+                    if (keys[controls.down]) { this.mesh.translateZ(this.speed); moved = true; }
+                    if (keys[controls.left]) { this.mesh.translateX(-this.speed); moved = true; }
+                    if (keys[controls.right]) { this.mesh.translateX(this.speed); moved = true; }
+                }
+
+                // Smooth rotation to face opponent when not moving heavily, or look forward based on velocity
+                if (!this.isAttacking) {
+                    const targetDir = new THREE.Vector3().subVectors(opponent.mesh.position, this.mesh.position);
+                    targetDir.y = 0;
+                    if (targetDir.lengthSq() > 0.1) {
+                        const targetRotation = Math.atan2(targetDir.x, targetDir.z);
+                        // Interpolate rotation for smoothness
+                        let diff = targetRotation - this.mesh.rotation.y;
+                        // Normalize angle
+                        while(diff < -Math.PI) diff += Math.PI * 2;
+                        while(diff > Math.PI) diff -= Math.PI * 2;
+                        this.mesh.rotation.y += diff * 0.1;
+                    }
+                }
+
+                // Bounds restriction (Arena is 30x30, so -14.5 to 14.5 for center of 1x1 box)
+                this.mesh.position.x = Math.max(-14, Math.min(14, this.mesh.position.x));
+                this.mesh.position.z = Math.max(-14, Math.min(14, this.mesh.position.z));
+
+                // Prevent passing through opponent
+                if (!this.isAttacking) {
+                    const dist = this.mesh.position.distanceTo(opponent.mesh.position);
+                    if (dist < 1.5) {
+                        this.mesh.position.copy(prevPos); // Simple collision resolution
+                    }
+                }
+
+                // Attack logic
+                if (keys[controls.attack] && this.attackCooldown <= 0 && !this.isAttacking) {
+                    this.isAttacking = true;
+                    this.attackTimer = this.attackDuration;
+                    this.attackCooldown = 35; // Frames before next attack
+                    this.hasHit = false;
+                    this.fist.visible = true;
+                }
+
+                // Handle Attack Animation & Hitbox
+                if (this.isAttacking) {
+                    this.attackTimer--;
+                    
+                    // Lunge effect
+                    if (this.attackTimer > this.attackDuration * 0.5) {
+                        this.mesh.translateZ(-0.1); 
+                    }
+
+                    // Fist animation out and in
+                    const progress = this.attackTimer / this.attackDuration;
+                    const extension = Math.sin(progress * Math.PI) * 2; // Extends out to 2 units
+                    this.fist.position.z = 0.6 + extension;
+
+                    if (this.attackTimer <= 0) {
+                        this.isAttacking = false;
+                        this.fist.visible = false;
+                        this.fist.position.z = 0;
+                    }
+                }
+            }
+
+            takeDamage(amount, direction) {
+                this.health -= amount;
+                if (this.health < 0) this.health = 0;
+                
+                // Damage flash effect
+                const originalEmissive = this.bodyMesh.material.emissive.getHex();
+                this.bodyMesh.material.emissive.setHex(0xffffff);
+                setTimeout(() => {
+                    if(this.bodyMesh) this.bodyMesh.material.emissive.setHex(originalEmissive);
+                }, 100);
+
+                // Knockback
+                const knockbackForce = direction.clone().normalize().multiplyScalar(2.5);
+                this.mesh.position.add(knockbackForce);
+                
+                // Enforce bounds after knockback
+                this.mesh.position.x = Math.max(-14, Math.min(14, this.mesh.position.x));
+                this.mesh.position.z = Math.max(-14, Math.min(14, this.mesh.position.z));
+            }
+        }
+
+        let player1, player2;
+        let gameState = 'playing'; // 'playing', 'gameover'
+        const keys = {};
+
+        function initGame() {
+            // Remove old players if restarting
+            if (player1) scene.remove(player1.mesh);
+            if (player2) scene.remove(player2.mesh);
+
+            // Create Player 1 (Blue)
+            player1 = new Player(0x0055ff, -8, 0, Math.PI / 2);
+            // Create Player 2 (Red)
+            player2 = new Player(0xff0055, 8, 0, -Math.PI / 2);
+
+            // Reset UI
+            document.getElementById('p1-health').style.width = '100%';
+            document.getElementById('p2-health').style.width = '100%';
+            document.getElementById('game-over-screen').style.display = 'none';
+
+            // Reset Keys
+            for (let key in keys) keys[key] = false;
+
+            gameState = 'playing';
+        }
+
+        // Input Listeners
+        window.addEventListener('keydown', (e) => {
+            // Prevent default scrolling for game keys
+            if(["Space", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(e.code)) {
+                e.preventDefault();
+            }
+            keys[e.code] = true;
+        });
+        
+        window.addEventListener('keyup', (e) => {
+            keys[e.code] = false;
+        });
+
+        // Window Resize Listener
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        function checkCollisions() {
+            // Helper function to check hit
+            const processHit = (attacker, defender) => {
+                if (attacker.isAttacking && !attacker.hasHit) {
+                    attacker.fist.geometry.computeBoundingBox();
+                    const fistBox = new THREE.Box3().setFromObject(attacker.fist);
+                    
+                    defender.bodyMesh.geometry.computeBoundingBox();
+                    const defenderBox = new THREE.Box3().setFromObject(defender.bodyMesh);
+
+                    if (fistBox.intersectsBox(defenderBox)) {
+                        attacker.hasHit = true;
+                        
+                        // Calculate hit direction
+                        const hitDir = new THREE.Vector3().subVectors(defender.mesh.position, attacker.mesh.position);
+                        hitDir.y = 0;
+                        
+                        defender.takeDamage(10, hitDir);
+                    }
+                }
+            };
+
+            processHit(player1, player2);
+            processHit(player2, player1);
+        }
+
+        function updateUI() {
+            document.getElementById('p1-health').style.width = player1.health + '%';
+            document.getElementById('p2-health').style.width = player2.health + '%';
+
+            if (player1.health <= 0 || player2.health <= 0) {
+                gameState = 'gameover';
+                const winnerName = player1.health > 0 ? 'PS ESPORTS' : 'MAJESTIC ZERO';
+                const winnerColor = player1.health > 0 ? '#00e5ff' : '#ff0055';
+                
+                const winText = document.getElementById('winner-text');
+                winText.innerText = winnerName + ' WINS!';
+                winText.style.color = winnerColor;
+                winText.style.textShadow = `0 0 20px ${winnerColor}`;
+                
+                document.getElementById('game-over-screen').style.display = 'flex';
+            }
+        }
+
+        // Restart Button listener
+        document.getElementById('restart-btn').addEventListener('click', () => {
+            initGame();
+        });
+
+        // Control configurations
+        const p1Controls = { up: 'KeyW', down: 'KeyS', left: 'KeyA', right: 'KeyD', attack: 'Space' };
+        const p2Controls = { up: 'ArrowUp', down: 'ArrowDown', left: 'ArrowLeft', right: 'ArrowRight', attack: 'Enter' };
+
+        // Main Game Loop
+        function animate() {
+            requestAnimationFrame(animate);
+
+            if (gameState === 'playing') {
+                player1.update(keys, p1Controls, player2);
+                player2.update(keys, p2Controls, player1);
+                                checkCollisions();
+                updateUI();
+            } else {
+                // Subtle camera rotation during game over
+                camera.position.x = Math.sin(Date.now() * 0.0005) * 25;
+                camera.position.z = Math.cos(Date.now() * 0.0005) * 25;
+                camera.lookAt(0, 0, 0);
+            }
+
+            renderer.render(scene, camera);
+        }
+
+        // Initialize and Start
+        window.onload = function() {
+            initGame();
+            animate();
+        };
+
+    </script>
+</body>
+</html>

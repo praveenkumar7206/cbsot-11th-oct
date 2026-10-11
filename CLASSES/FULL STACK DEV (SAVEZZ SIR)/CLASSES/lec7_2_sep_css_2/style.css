@@ -1,0 +1,21 @@
+h1 {
+    color: brown;
+}
+#para {
+    background-color: greenyellow ;
+}
+span{
+    background-color: white;
+}
+div{
+    /* background-image: url("https://img.magnific.com/free-photo/closeup-shot-beautiful-butterfly-with-interesting-textures-orange-petaled-flower_181624-7640.jpg?semt=ais_hybrid&w=740&q=80") ; height: 365px; background-size: contain; background-repeat: no-repeat;  */
+    
+video{
+    width: 100%;
+    position: fixed;
+    top: 0;
+    z-index: -1;
+    height:300 px;
+
+}
+}

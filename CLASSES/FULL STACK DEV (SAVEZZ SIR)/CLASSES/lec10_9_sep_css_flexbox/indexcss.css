@@ -1,0 +1,19 @@
+.parent{
+    background-color: yellow;
+    padding: 1rem;
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap
+    ;
+    height: 50vh;
+}
+
+.parent .item{
+    height: 2rem;
+    width: 5rem;
+    border: 2px  solid black;
+}
+
+#parent{
+
+}

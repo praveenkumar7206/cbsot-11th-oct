@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Classroom Daily Tracker</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+
+  <style>
+    :root {
+      --bg-base: #07090e;
+      --card-bg: rgba(18, 22, 34, 0.75);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --card-hover: rgba(255, 255, 255, 0.14);
+      --text-main: #f0f3f8;
+      --text-muted: #8b94a5;
+      --accent-cyan: #00f2fe;
+      --accent-blue: #4facfe;
+      --radius: 16px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
+    body { background: radial-gradient(circle at 50% 0%, #151a30 0%, #07090e 75%); color: var(--text-main); min-height: 100vh; padding: 32px 16px; display: flex; justify-content: center; }
+    
+    .glow-orb { position: fixed; top: -100px; left: 50%; transform: translateX(-50%); width: 500px; height: 350px; background: radial-gradient(circle, rgba(79, 172, 254, 0.15) 0%, transparent 70%); filter: blur(60px); z-index: 0; pointer-events: none; }
+    .container { width: 100%; max-width: 650px; position: relative; z-index: 1; }
+
+    .header { text-align: center; margin-bottom: 28px; }
+    .badge-pill { display: inline-flex; gap: 6px; padding: 5px 14px; border-radius: 999px; background: rgba(0, 242, 254, 0.08); border: 1px solid rgba(0, 242, 254, 0.3); color: var(--accent-cyan); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; margin-bottom: 12px; }
+    h1 { font-size: 2rem; font-weight: 800; background: linear-gradient(135deg, #ffffff 40%, #8b94a5 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 6px; }
+    .subtitle { color: var(--text-muted); font-size: 0.9rem; }
+
+    .glass-card { background: var(--card-bg); backdrop-filter: blur(20px); border: 1px solid var(--card-border); border-radius: var(--radius); padding: 24px; margin-bottom: 22px; }
+    
+    .field { margin-bottom: 18px; }
+    label { display: block; font-size: 0.8rem; font-weight: 600; text-transform: uppercase; color: var(--text-muted); margin-bottom: 8px; }
+    input, select { width: 100%; background: rgba(10, 13, 20, 0.8); border: 1px solid var(--card-border); border-radius: 10px; padding: 13px 16px; color: #fff; font-size: 0.95rem; outline: none; transition: all 0.25s ease; }
+    input:focus, select:focus { border-color: var(--accent-blue); background: rgba(15, 20, 32, 0.95); }
+    input:disabled, select:disabled { opacity: 0.5; cursor: not-allowed; }
+    
+    .row { display: flex; gap: 14px; }
+    .row .field { flex: 1; }
+
+    /* Dynamic Entry Block Styles */
+    .entry-block { background: rgba(0, 0, 0, 0.2); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; padding: 16px; margin-bottom: 16px; position: relative; }
+    .entry-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+    .entry-title { font-size: 0.85rem; font-weight: 700; color: var(--accent-cyan); }
+    .btn-remove { background: rgba(255, 65, 108, 0.15); color: #ff6b8b; border: 1px solid rgba(255, 65, 108, 0.3); border-radius: 6px; padding: 4px 10px; font-size: 0.75rem; cursor: pointer; transition: 0.2s; }
+    .btn-remove:hover { background: rgba(255, 65, 108, 0.3); }
+    
+    .btn-add { width: 100%; background: rgba(255,255,255,0.05); border: 1px dashed rgba(255,255,255,0.2); color: var(--text-main); padding: 12px; border-radius: 10px; cursor: pointer; font-weight: 600; transition: 0.2s; margin-bottom: 18px; }
+    .btn-add:hover { background: rgba(255,255,255,0.1); border-color: var(--accent-cyan); color: var(--accent-cyan); }
+
+    .tier-meter { border-radius: 12px; padding: 12px 16px; margin-top: 6px; display: flex; align-items: center; gap: 12px; border: 1px solid transparent; transition: all 0.4s; }
+    .tier-icon { font-size: 1.4rem; }
+    .tier-0 { background: rgba(255, 255, 255, 0.03); color: var(--text-muted); border-color: rgba(255, 255, 255, 0.05); }
+    .tier-1 { background: rgba(79, 172, 254, 0.12); color: #70baff; border-color: rgba(79, 172, 254, 0.3); }
+    .tier-2 { background: rgba(0, 242, 254, 0.15); color: #43f3ff; border-color: rgba(0, 242, 254, 0.4); }
+    .tier-3 { background: rgba(255, 65, 108, 0.15); color: #ff6b8b; border-color: rgba(255, 65, 108, 0.4); box-shadow: 0 0 15px rgba(255, 65, 108, 0.2); }
+    .tier-4 { background: linear-gradient(90deg, rgba(255, 215, 0, 0.18), rgba(121, 40, 202, 0.2)); color: #ffd700; border-color: rgba(255, 215, 0, 0.5); box-shadow: 0 0 25px rgba(255, 215, 0, 0.35); }
+
+    .btn-submit { width: 100%; padding: 15px; border: none; border-radius: 12px; background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%); color: #030812; font-size: 1rem; font-weight: 800; cursor: pointer; transition: 0.3s; margin-top: 6px; }
+    .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 12px 35px rgba(0, 242, 254, 0.55); }
+    .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+    /* Feed Styles */
+    .feed-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+    .feed-title { font-size: 1.1rem; font-weight: 700; }
+    .btn-ghost { background: rgba(255, 255, 255, 0.05); border: 1px solid var(--card-border); color: var(--text-muted); padding: 6px 14px; border-radius: 8px; cursor: pointer; }
+    .feed-list { display: flex; flex-direction: column; gap: 10px; }
+    .feed-item { background: rgba(12, 16, 26, 0.6); border: 1px solid var(--card-border); border-radius: 12px; padding: 14px 16px; display: flex; justify-content: space-between; align-items: center; }
+    .feed-left { display: flex; flex-direction: column; gap: 4px; max-width: 70%; }
+    .feed-author { font-size: 0.95rem; font-weight: 700; color: #fff; }
+    .feed-team { font-size: 0.7rem; color: var(--accent-cyan); text-transform: uppercase; font-weight: 800; letter-spacing: 0.05em; }
+    .feed-topic { font-size: 0.83rem; color: var(--text-muted); }
+    .feed-subject { display: inline-block; background: rgba(255,255,255,0.1); padding: 2px 6px; border-radius: 4px; font-size: 0.7rem; margin-bottom: 2px; }
+    .feed-right { text-align: right; }
+    .hour-badge { background: rgba(0, 242, 254, 0.12); color: var(--accent-cyan); border: 1px solid rgba(0, 242, 254, 0.3); padding: 3px 10px; border-radius: 999px; font-weight: 700; }
+
+    /* MVP Banner */
+    .mvp-banner { background: linear-gradient(135deg, rgba(255, 215, 0, 0.12), rgba(255, 107, 0, 0.08)); border: 1px solid rgba(255, 215, 0, 0.3); border-radius: 14px; padding: 14px 18px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    .mvp-avatar { width: 42px; height: 42px; border-radius: 50%; background: linear-gradient(135deg, #ffd700, #ff8c00); display: flex; align-items: center; justify-content: center; font-size: 1.3rem; margin-right: 12px;}
+    .mvp-name { font-size: 1.05rem; font-weight: 700; color: #fff; }
+    .mvp-hours { font-size: 1.25rem; font-weight: 800; color: #ffd700; text-align: right; }
+    
+    /* Modal */
+    #celebrationModal { position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(8px); display: none; align-items: center; justify-content: center; z-index: 100; padding: 16px; }
+    .modal-box { background: #111624; border: 1px solid rgba(255,255,255,0.15); border-radius: 20px; padding: 32px 24px; text-align: center; width: 100%; max-width: 380px; }
+    .modal-emoji { font-size: 3.5rem; margin-bottom: 12px; }
+    .modal-title { font-size: 1.4rem; font-weight: 800; color: #fff; margin-bottom: 6px; }
+
+    /* --- Smooth Scrolling --- */
+    html { scroll-behavior: smooth; }
+
+    /* --- Top Right Leaderboard Button --- */
+    .lb-fab {
+      position: absolute;
+      top: 24px;
+      right: 24px;
+      background: rgba(255, 215, 0, 0.12);
+      border: 1px solid rgba(255, 215, 0, 0.4);
+      color: #ffd700;
+      padding: 10px 18px;
+      border-radius: 999px;
+      font-weight: 800;
+      font-size: 0.85rem;
+      cursor: pointer;
+      backdrop-filter: blur(10px);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      z-index: 50;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 4px 15px rgba(255, 215, 0, 0.2);
+    }
+    .lb-fab:hover {
+      background: rgba(255, 215, 0, 0.25);
+      transform: translateY(-2px) scale(1.05);
+      box-shadow: 0 8px 25px rgba(255, 215, 0, 0.4);
+    }
+
+    /* --- Leaderboard Section UI --- */
+    .lb-controls { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
+    .lb-tabs-container { display: flex; gap: 10px; }
+    .lb-tabs { display: flex; flex: 1; background: rgba(0,0,0,0.4); border-radius: 12px; padding: 4px; border: 1px solid rgba(255,255,255,0.05); }
+    .lb-tab { flex: 1; padding: 10px; border: none; background: transparent; color: var(--text-muted); font-weight: 700; font-size: 0.85rem; cursor: pointer; border-radius: 8px; transition: 0.3s; }
+    .lb-tab.active { background: rgba(0, 242, 254, 0.15); color: var(--accent-cyan); box-shadow: 0 2px 10px rgba(0, 242, 254, 0.15); }
+    
+    .lb-list { display: flex; flex-direction: column; gap: 8px; max-height: 400px; overflow-y: auto; padding-right: 5px; }
+    .lb-list::-webkit-scrollbar { width: 6px; }
+    .lb-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
+    
+    .lb-item { display: flex; align-items: center; padding: 14px 18px; background: rgba(12, 16, 26, 0.6); border: 1px solid var(--card-border); border-radius: 12px; transition: all 0.3s ease; }
+    .lb-item:hover { background: rgba(18, 24, 38, 0.9); transform: translateX(5px); border-color: rgba(0, 242, 254, 0.3); }
+    
+    .lb-rank { font-size: 1.3rem; font-weight: 800; width: 45px; display: flex; justify-content: center; }
+    .rank-1 { color: #ffd700; font-size: 1.8rem; text-shadow: 0 0 15px rgba(255,215,0,0.4); }
+    .rank-2 { color: #c0c0c0; font-size: 1.6rem; }
+    .rank-3 { color: #cd7f32; font-size: 1.4rem; }
+    .rank-other { color: var(--text-muted); font-size: 1.1rem; }
+    
+    .lb-details { flex: 1; padding-left: 12px; }
+    .lb-name { font-weight: 800; font-size: 1.05rem; color: #fff; }
+    .lb-hours { font-weight: 800; color: var(--accent-cyan); font-size: 1.2rem; text-align: right; }
+    .lb-hours span { font-size: 0.75rem; color: var(--text-muted); font-weight: 600; }
+
+    /* --- ASH CATCHES PIKACHU LOADING MODAL --- */
+    .poke-modal {
+      display: none; /* Default hidden */
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(8px);
+      z-index: 9999;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    }
+    .poke-box {
+      background: rgba(15, 23, 42, 0.85);
+      border: 2px solid #00f2fe;
+      border-radius: 20px;
+      padding: 30px;
+      width: 90%; max-width: 400px;
+      text-align: center;
+      box-shadow: 0 0 30px rgba(0, 242, 254, 0.4);
+      position: relative;
+      overflow: hidden;
+    }
+    .loading-text {
+      color: #fff; margin-bottom: 20px; font-weight: 800; font-size: 1.2rem;
+      text-transform: uppercase; letter-spacing: 1px;
+    }
+    .poke-track {
+      position: relative; height: 50px; margin-bottom: 15px; 
+      border-bottom: 3px solid rgba(255, 255, 255, 0.2);
+    }
+    .ash-sprite {
+      position: absolute; left: 0; bottom: 5px; font-size: 2.2rem;
+      transition: left 0.4s ease-out; /* Smooth running */
+    }
+    .pikachu-sprite {
+      position: absolute; right: 0; bottom: 5px; font-size: 2.2rem;
+      animation: pikaBounce 0.5s infinite alternate;
+    }
+    @keyframes pikaBounce {
+      from { transform: translateY(0); }
+      to { transform: translateY(-8px); }
+    }
+    .progress-container {
+      width: 100%; height: 12px; background: rgba(255,255,255,0.1); 
+      border-radius: 10px; overflow: hidden;
+    }
+    .progress-fill {
+      width: 0%; height: 100%; 
+      background: linear-gradient(90deg, #fadd00 0%, #ff8c00 100%);
+      transition: width 0.4s ease-out;
+      box-shadow: 0 0 10px #fadd00;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="glow-orb"></div>
+   <!-- POKEMON LOADING MODAL -->
+  <div id="pokeModal" class="poke-modal">
+    <div class="poke-box">
+      <div class="loading-text" id="loadingText">Syncing Data...</div>
+      
+      <div class="poke-track">
+        <!-- Ash Running -->
+        <div class="ash-sprite" id="ash">🏃🏻‍♂️💨</div>
+        <!-- Pikachu Waiting -->
+        <div class="pikachu-sprite" id="pika">🐹⚡</div>
+      </div>
+      
+      <div class="progress-container">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="container">
+    <!-- Top Right Leaderboard Button -->
+    <button class="lb-fab" onclick="scrollToLeaderboard()">
+      🏆 LEADERBOARD
+    </button>
+    <div class="header">
+      <div class="badge-pill">⚡ Live Tracker</div>
+      <h1>Next Gen Devs API</h1>
+      <p class="subtitle">Lock in your hours. Stay accountable.</p>
+    </div>
+
+    <!-- Daily MVP Banner -->
+    <div class="mvp-banner" id="mvpBanner" style="display: none;">
+      <div style="display: flex; align-items: center;">
+        <div class="mvp-avatar">👑</div>
+        <div>
+          <div style="font-size: 0.72rem; color: #ffd700; font-weight: 700; text-transform: uppercase;">Top Grinder Today</div>
+          <div class="mvp-name" id="mvpName">—</div>
+        </div>
+      </div>
+      <div class="mvp-hours" id="mvpHours">0 hrs</div>
+    </div>
+
+    <div class="glass-card">
+      <form id="trackerForm">
+        <!-- calendar setting  -->
+<div class="field">
+          <label for="date">Select Date</label>
+          <input type="date" id="date" required onclick="this.showPicker()" style="cursor: pointer; width: 100%;" />
+        </div>
+
+        <!-- Cascading Dropdowns -->
+        <div class="row">
+          <div class="field">
+            <label for="team">Select Team</label>
+            <select id="team" required>
+              <option value="" disabled selected>Choose your team...</option>
+            </select>
+          </div>
+<!-- NAME & PIN ROW -->
+        <div style="display: flex; gap: 15px;">
+          <div class="field" style="flex: 1;">
+            <label for="name">Select Your Name</label>
+            <select id="name" required disabled>
+              <option value="" disabled selected>Select Team First...</option>
+            </select>
+          </div>
+          <div class="field" style="width: 110px;">
+            <label for="pin" style="color: #ffcc00;">Secret PIN 🔒</label>
+            <input type="password" id="pin" required maxlength="4" placeholder="****" style="text-align: center; font-weight: 800; letter-spacing: 3px; cursor: text;" />
+          </div>
+        </div>
+        </div>
+
+        <div id="dynamicEntries">
+          <!-- Dynamic Subject Rows Inject Here -->
+        </div>
+
+        <button type="button" id="addSubjectBtn" class="btn-add" onclick="addSubjectRow()">+ Add Another Subject</button>
+
+        <!-- Total Hours Meter -->
+        <div class="field">
+          <div id="tierMeter" class="tier-meter tier-0">
+            <span class="tier-icon" id="tierIcon">⏳</span>
+            <div>
+              <div id="tierTitle">Awaiting Entries...</div>
+              <div style="font-size: 0.75rem; opacity: 0.8;" id="tierDesc">Total Hours: 0.0</div>
+            </div>
+          </div>
+        </div>
+
+        <button type="submit" id="submitBtn" class="btn-submit">Submit All Entries</button>
+      </form>
+    </div>
+
+    <div class="glass-card">
+      <div class="feed-header">
+        <div class="feed-title">RECENT LOGS</div>
+        <button class="btn-ghost" onclick="fetchFeed()">↻ Sync</button>
+      </div>
+      <div class="feed-list" id="feedList">
+        <div style="text-align: center; color: var(--text-muted); padding: 24px 0;">Connecting to cloud...</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LEADERBOARD SECTION -->
+    <div class="glass-card" id="leaderboardSection" style="margin-top: 30px;">
+      <div class="feed-header">
+        <div class="feed-title" style="color: #ffd700; text-shadow: 0 0 10px rgba(255,215,0,0.3);">🏆 HALL OF FAME</div>
+      </div>
+      
+      <div class="lb-controls">
+        <!-- Team vs Student Toggle -->
+        <div class="lb-tabs-container">
+          <div class="lb-tabs">
+            <button class="lb-tab active" id="tab-student" onclick="switchLbType('student')">👨‍💻 Students</button>
+            <button class="lb-tab" id="tab-team" onclick="switchLbType('team')">🛡️ Teams</button>
+          </div>
+        </div>
+        <!-- Timeframe Toggle -->
+        <div class="lb-tabs-container">
+          <div class="lb-tabs" style="background: rgba(0,0,0,0.2);">
+            <button class="lb-tab active" id="time-today" onclick="switchLbTime('today')">Today</button>
+            <button class="lb-tab" id="time-weekly" onclick="switchLbTime('weekly')">7 Days</button>
+            <button class="lb-tab" id="time-all" onclick="switchLbTime('all')">All-Time</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="lb-list" id="lbList">
+        <!-- Rankings will inject here dynamically -->
+        <div style="text-align: center; color: var(--text-muted); padding: 20px;">Fetching ranks...</div>
+      </div>
+    </div>
+
+  <div id="celebrationModal">
+    <div class="modal-box">
+      <div class="modal-emoji" id="modalEmoji">🔥</div>
+      <div class="modal-title" id="modalTitle">Saved!</div>
+      <div style="color: var(--text-muted); margin-bottom: 20px;">Your progress has been locked in.</div>
+      <button class="btn-submit" onclick="document.getElementById('celebrationModal').style.display='none'">Keep Cooking</button>
+    </div>
+  </div>
+
+  <script>
+    // ==========================================
+    // 1. SETTINGS & DATA CONSTANTS
+    // ==========================================
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxVnzVwNatjUnZR7NhGb2phQd3RyGEn1c9hHmihJrGlYJD9JUA0ZuCTeNQfH0ZViX3XTg/exec";
+
+
+// Team & Student Dictionary (Real Names)
+    const cohortData = {
+      "Alpha Coders": ["Praveen Kumar", "Aarav Sharma", "Daksh Agarwal", "Rohit Singh"],
+      "Syntax Squad": ["Uday Gupta", "Aditya Verma", "Karan Malhotra", "Rohan Desai"],
+      "Bug Bashers": ["Sneha Iyer", "Priya Sharma", "Neha Reddy", "Anjali Singh"],
+      "Logic Legion": ["Vikram Rathore", "Rahul Kapoor", "Sameer Joshi", "Kunal Tiwari"],
+      "Tech Titans": ["Arjun Patel", "Devansh Mehta", "Aryan Rajput", "Kabir Das"],
+      "Cyber Ninjas": ["Nisha Patil", "Kavya Menon", "Riya Sen", "Megha Nair"],
+      "Data Demons": ["Harsh Vardhan", "Abhinav Mishra", "Siddharth Bose", "Yash Jain"],
+      "Web Wizards": ["Ishaan Chawla", "Parth Kadam", "Pranav Deshmukh", "Chaitanya Rao"],
+      "Cloud Chasers": ["Shruti Hassan", "Tanya Bhatia", "Simran Kaur", "Pooja Hegde"],
+      "Runtime Terrors": ["Gaurav Dubey", "Manish Pandey", "Saurabh Shukla", "Nitin Yadav"]
+    };
+
+    // Predefined Subjects
+    const subjectList = [
+      "Data Structures & Algorithms",
+      "Web Development (Frontend)",
+      "Web Development (Backend)",
+      "Machine Learning / AI",
+      "Core CS (OS, DBMS, Networks)",
+      "College Assignments",
+      "Other"
+    ];
+
+// ==========================================
+    // 2. INITIALIZATION (Date & Dropdowns)
+    // ==========================================
+    
+    // Date Logic: Aaj aur past ki sabhi dates allow karega, future block karega
+    const today = new Date();
+    const localToday = new Date(today.getTime() - (today.getTimezoneOffset() * 60000));
+    const todayIsoDate = localToday.toISOString().split('T')[0];
+
+    const dateInput = document.getElementById('date');
+    dateInput.value = todayIsoDate;       // By default aaj ki date set rahegi
+    dateInput.max = todayIsoDate;         // Future dates select nahi ho sakti (Blocked)
+
+    // Populate Team Dropdown
+    const teamSelect = document.getElementById('team');
+    const nameSelect = document.getElementById('name');
+    
+    Object.keys(cohortData).forEach(teamName => {
+      let option = document.createElement('option');
+      option.value = teamName;
+      option.textContent = teamName;
+      teamSelect.appendChild(option);
+    });
+
+    // Handle Cascading Logic
+    teamSelect.addEventListener('change', function() {
+      const selectedTeam = this.value;
+      nameSelect.innerHTML = '<option value="" disabled selected>Select Your Name...</option>'; // Reset
+      
+      if(selectedTeam && cohortData[selectedTeam]) {
+        nameSelect.disabled = false;
+        cohortData[selectedTeam].forEach(student => {
+          let option = document.createElement('option');
+          option.value = student;
+          option.textContent = student;
+          nameSelect.appendChild(option);
+        });
+      }
+    });
+
+    // ==========================================
+    // 3. DYNAMIC SUBJECT ROWS
+    // ==========================================
+    const entriesContainer = document.getElementById('dynamicEntries');
+    let rowCount = 0;
+
+    function addSubjectRow() {
+      rowCount++;
+      const div = document.createElement('div');
+      div.className = 'entry-block';
+      div.id = `entryRow_${rowCount}`;
+      
+      // Build Subject Options
+      const subOptions = subjectList.map(sub => `<option value="${sub}">${sub}</option>`).join('');
+
+      div.innerHTML = `
+        <div class="entry-header">
+          <div class="entry-title">Entry #${rowCount}</div>
+          ${rowCount > 1 ? `<button type="button" class="btn-remove" onclick="removeRow(${rowCount})">✖ Remove</button>` : ''}
+        </div>
+        <div class="field">
+          <select class="subject-input" required>
+            <option value="" disabled selected>Select Subject...</option>
+            ${subOptions}
+          </select>
+        </div>
+        <div class="row">
+          <div class="field">
+            <input type="text" class="topic-input" placeholder="Topic details (e.g. Arrays)" required />
+          </div>
+          <div class="field" style="flex: 0.5;">
+            <input type="number" class="hours-input" step="0.5" min="0.5" max="24" placeholder="Hours" required oninput="calculateTotalHours()" />
+          </div>
+        </div>
+      `;
+      entriesContainer.appendChild(div);
+    }
+
+    function removeRow(id) {
+      document.getElementById(`entryRow_${id}`).remove();
+      calculateTotalHours(); // Recalculate if a row is deleted
+    }
+
+    // Initialize with 1 row
+    addSubjectRow();
+
+    // ==========================================
+    // 4. TOTAL HOURS & REACTION METER
+    // ==========================================
+    let currentTotalHours = 0;
+
+    function calculateTotalHours() {
+      const inputs = document.querySelectorAll('.hours-input');
+      let total = 0;
+      inputs.forEach(input => {
+        const val = parseFloat(input.value);
+        if(!isNaN(val)) total += val;
+      });
+      
+      currentTotalHours = total;
+      updateTierMeter(total);
+    }
+
+    function updateTierMeter(val) {
+      const meter = document.getElementById('tierMeter');
+      const icon = document.getElementById('tierIcon');
+      const title = document.getElementById('tierTitle');
+      const desc = document.getElementById('tierDesc');
+
+      meter.className = 'tier-meter';
+
+      if (val <= 0) {
+        meter.classList.add('tier-0');
+        icon.innerText = '⏳'; title.innerText = 'Awaiting Entries...';
+      } else if (val < 2) {
+        meter.classList.add('tier-1');
+        icon.innerText = '🌱'; title.innerText = 'Warm-up Mode';
+      } else if (val < 4) {
+        meter.classList.add('tier-2');
+        icon.innerText = '⚡'; title.innerText = 'Flow State';
+      } else if (val < 6) {
+        meter.classList.add('tier-3');
+        icon.innerText = '🔥'; title.innerText = 'BEAST MODE';
+      } else {
+        meter.classList.add('tier-4');
+        icon.innerText = '👑'; title.innerText = 'GOD TIER GRIND';
+      }
+      
+      desc.innerText = `Total Hours: ${val}`;
+    }
+
+    function triggerCelebration(hours) {
+      if (hours >= 4) {
+        confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+        setTimeout(() => confetti({ particleCount: 120, spread: 100, origin: { x: 0.2, y: 0.7 } }), 300);
+      } else {
+        confetti({ particleCount: 50, spread: 60, origin: { y: 0.7 } });
+      }
+    }
+
+    // ==========================================
+    // 5. FORM SUBMISSION & POKEMON ANIMATION
+    // ==========================================
+    document.getElementById('trackerForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const submitBtn = document.querySelector('button[type="submit"]');
+      const pokeModal = document.getElementById('pokeModal');
+      const ash = document.getElementById('ash');
+      const progressFill = document.getElementById('progressFill');
+      const loadingText = document.getElementById('loadingText');
+
+// ==========================
+      // SQUAD SECRET PIN DATABASE
+      // ==========================
+      const studentPins = {
+        "Praveen Kumar": "7206",
+        "Aarav Sharma": "1111",
+        "Daksh Agarwal": "2222",
+        "Rohit Singh": "3333",
+        // Bhai, baki dosto ke naam aur unke 4-digit PIN yahan add kar lena!
+        // Agar kisi ka PIN yahan nahi likha hoga, toh uska default pass "0000" maan liya jayega.
+      };
+
+      // 1. Data Validate Karo (ULTIMATE BYPASS LOGIC)
+      const form = document.getElementById('trackerForm');
+      const team = document.getElementById('team').value;
+      const name = document.getElementById('name').value;
+      const date = document.getElementById('date').value;
+      const enteredPin = document.getElementById('pin').value;
+      
+      // --- PIN VERIFICATION LOGIC ---
+      const correctPin = studentPins[name] || "0000"; // Default pin for unlisted users is 0000
+      if (enteredPin !== correctPin) {
+        alert(`🚨 IMPOSTER ALERT! 🚨\nWrong PIN for ${name}. You cannot submit this!`);
+        return; // Galat PIN par form yahin ruk jayega, aage nahi badhega!
+      }
+      // ------------------------------
+
+      const entries = [];
+      const allSelects = Array.from(form.querySelectorAll('select')).filter(s => s.id !== 'team' && s.id !== 'name');
+      const allInputs = Array.from(form.querySelectorAll('input')).filter(i => i.type !== 'date' && i.type !== 'submit' && i.type !== 'button' && i.id !== 'pin');
+      
+      for (let i = 0; i < allSelects.length; i++) {
+        const subject = allSelects[i] ? allSelects[i].value.trim() : "";
+        const topicBox = allInputs[i * 2];
+        const hoursBox = allInputs[(i * 2) + 1];
+        
+        const topic = topicBox ? topicBox.value.trim() : "";
+        const hours = hoursBox ? hoursBox.value.trim() : "";
+        
+        if (subject !== "" && topic !== "" && hours !== "") {
+          entries.push({ subject, topic, hours });
+        }
+      }
+
+      if(entries.length === 0) {
+        alert("Bhai, data read nahi ho raha hai! Form ke boxes blank hain.");
+        return;
+      }
+
+      // 2. Start Animation!
+      submitBtn.disabled = true;
+      pokeModal.style.display = 'flex'; // Popup open
+      loadingText.innerText = "Chasing Pikachu... ⚡";
+      ash.style.left = '0%';
+      progressFill.style.width = '0%';
+
+      let progress = 0;
+      // Fake progress interval (makes Ash run while waiting for Google)
+      const runInterval = setInterval(() => {
+        progress += Math.random() * 15; // Random jumps forward
+        if (progress > 85) progress = 85; // Ruk jao 85% pe jab tak API response na de
+        
+        ash.style.left = `calc(${progress}% - 20px)`; 
+        progressFill.style.width = `${progress}%`;
+      }, 500);
+
+      const payload = { team, name, date, entries };
+
+      // 3. Send Data to Google Sheet
+      try {
+        await fetch(SCRIPT_URL, {
+          method: 'POST',
+          redirect: 'follow',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify(payload)
+        });
+
+        // 4. Success! Ash Catches Pikachu
+        clearInterval(runInterval);
+        ash.style.left = 'calc(100% - 45px)'; // Reached end
+        progressFill.style.width = '100%';
+        loadingText.innerText = "GOTCHA! 🎉";
+
+        // Wait a half-second so user can see Ash catch Pikachu, then close popup
+        setTimeout(() => {
+          pokeModal.style.display = 'none';
+          triggerConfetti();
+          document.getElementById('trackerForm').reset();
+          document.getElementById('subjectsContainer').innerHTML = '';
+          addSubjectField(); 
+          fetchFeed(); // Refresh the feed and leaderboard
+          submitBtn.disabled = false;
+        }, 800);
+
+      } catch (error) {
+        clearInterval(runInterval);
+        pokeModal.style.display = 'none';
+        submitBtn.disabled = false;
+        alert("Network Error! Pikachu escaped. Try again.");
+      }
+    });
+
+    // ==========================================
+    // 6. FETCH FEED, MVP & LEADERBOARD
+    // ==========================================
+    let globalSheetData = [];
+    let currentLbType = 'student'; 
+    let currentLbTime = 'today';   
+
+    // Smooth Scroll to Leaderboard
+    function scrollToLeaderboard() {
+      document.getElementById('leaderboardSection').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // Toggle Functions (Student vs Team)
+    function switchLbType(type) {
+      currentLbType = type;
+      document.getElementById('tab-student').classList.remove('active');
+      document.getElementById('tab-team').classList.remove('active');
+      document.getElementById(`tab-${type}`).classList.add('active');
+      renderLeaderboard();
+    }
+
+    // Toggle Functions (Timeframe)
+    function switchLbTime(time) {
+      currentLbTime = time;
+      document.getElementById('time-today').classList.remove('active');
+      document.getElementById('time-weekly').classList.remove('active');
+      document.getElementById('time-all').classList.remove('active');
+      document.getElementById(`time-${time}`).classList.add('active');
+      renderLeaderboard();
+    }
+
+    // Render Leaderboard Data
+    function renderLeaderboard() {
+      let filteredData = globalSheetData;
+      
+      const today = new Date();
+      const localToday = new Date(today.getTime() - (today.getTimezoneOffset() * 60000));
+      const todayStr = localToday.toISOString().split('T')[0];
+
+      if (currentLbTime === 'today') {
+        filteredData = globalSheetData.filter(d => d.date === todayStr);
+      } else if (currentLbTime === 'weekly') {
+        const lastWeek = new Date(localToday);
+        lastWeek.setDate(lastWeek.getDate() - 7);
+        const lastWeekStr = lastWeek.toISOString().split('T')[0];
+        filteredData = globalSheetData.filter(d => d.date >= lastWeekStr && d.date <= todayStr);
+      }
+
+      const totals = {};
+      filteredData.forEach(row => {
+        const key = currentLbType === 'team' ? row.team : row.name;
+        if (!key || key === 'No Team') return;
+        totals[key] = (totals[key] || 0) + parseFloat(row.hours || 0);
+      });
+
+      const sortedLb = Object.entries(totals).sort((a, b) => b[1] - a[1]);
+      const lbList = document.getElementById('lbList');
+
+      if (sortedLb.length === 0) {
+        lbList.innerHTML = `<div style="text-align: center; color: var(--text-muted); padding: 30px;">No grind records found for this period. ⏳</div>`;
+        return;
+      }
+
+      lbList.innerHTML = sortedLb.map((item, index) => {
+        const rank = index + 1;
+        let rankClass = 'rank-other';
+        let rankIcon = `#${rank}`;
+        
+        if (rank === 1) { rankClass = 'rank-1'; rankIcon = '🥇'; }
+        else if (rank === 2) { rankClass = 'rank-2'; rankIcon = '🥈'; }
+        else if (rank === 3) { rankClass = 'rank-3'; rankIcon = '🥉'; }
+        
+        return `
+          <div class="lb-item">
+            <div class="lb-rank ${rankClass}">${rankIcon}</div>
+            <div class="lb-details">
+              <div class="lb-name">${item[0]}</div>
+            </div>
+            <div class="lb-hours">${item[1].toFixed(1)} <span>hrs</span></div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // Fetch Data from Google Sheet
+    async function fetchFeed() {
+      const feedList = document.getElementById('feedList');
+      try {
+        const res = await fetch(SCRIPT_URL);
+        const data = await res.json();
+        
+        globalSheetData = data; // Data save kar liya Leaderboard ke liye
+        
+        if (!data || data.length === 0) {
+          feedList.innerHTML = `<div style="text-align: center; color: var(--text-muted); padding: 18px;">No sessions logged yet.</div>`;
+          return;
+        }
+
+        // Recent Logs Print Karna
+        feedList.innerHTML = data.slice(0, 15).map(item => `
+          <div class="feed-item">
+            <div class="feed-left">
+              <div class="feed-team">${item.team || 'No Team'}</div>
+              <div class="feed-author">${item.name}</div>
+              <div class="feed-topic">
+                <span class="feed-subject">${item.subject}</span><br>
+                ${item.topic}
+              </div>
+            </div>
+            <div class="feed-right">
+              <div class="hour-badge">${item.hours}h</div>
+            </div>
+          </div>
+        `).join('');
+
+        calculateMVP(data);
+        renderLeaderboard(); // Leaderboard Refresh
+        
+      } catch (err) {
+        feedList.innerHTML = `<div style="text-align: center; color: #ff6b8b;">Error syncing logs.</div>`;
+      }
+    }
+
+    // Daily MVP Banner Logic
+    function calculateMVP(data) {
+      const todayStr = document.getElementById('date').value;
+      const todayLogs = data.filter(item => item.date === todayStr);
+
+      if (todayLogs.length === 0) {
+        document.getElementById('mvpBanner').style.display = 'none';
+        return;
+      }
+
+      const totals = {};
+      todayLogs.forEach(log => {
+        totals[log.name] = (totals[log.name] || 0) + parseFloat(log.hours || 0);
+      });
+
+      let topGrinder = null;
+      let maxHours = 0;
+      for (const [name, hours] of Object.entries(totals)) {
+        if (hours > maxHours) { maxHours = hours; topGrinder = name; }
+      }
+
+      if (topGrinder && maxHours > 0) {
+        document.getElementById('mvpBanner').style.display = 'flex';
+        document.getElementById('mvpName').innerText = topGrinder;
+        document.getElementById('mvpHours').innerText = `${maxHours} hrs`;
+      }
+    }
+
+    // Load Data On Page Start
+    fetchFeed(); 
+  </script>
+</body>
+</html>

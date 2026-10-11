@@ -1,0 +1,38 @@
+section{
+    background-color: yellow;
+    DISPLAY: GRID;
+    GRID-TEMPLATE-COLUMNS: 1FR 1FR 1FR 1FR;
+    GRID-TEMPLATE-ROWS: 1FR 1FR ;
+    gap: 5PX;
+    padding: .5rem;
+    grid-template-areas: 
+    "box-1 box-1 box-2 box-3"
+    "box-1 box-1 box-4 box-5" ;
+}    
+section div{
+    border: 1px SOLID BLACK;
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#sec{
+    background-color: lightblue;
+    DISPLAY: GRID;
+    GRID-TEMPLATE-COLUMNS: 1FR 1FR 1FR 1fr ;
+    GRID-TEMPLATE-ROWS: 1FR 1FR 1fr ;
+    gap: 5PX;
+    padding: .5rem;
+    grid-template-areas: 
+    "box-1 box-1 box-2 box-2"
+    "box-3 box-4 box-4 box-4"
+    "box-5 box-5 box-5 box-5" ;
+}    
+#sec .div{
+    border: 1px SOLID BLACK;
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acadliance</title>
+
+    <!-- Everything is in this single HTML file -->
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Poppins", Arial, sans-serif;
+            overflow-x: hidden;
+        }
+
+        .navbar {
+            height: 67px;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+            background: #fff;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .logo {
+            display: flex;
+            flex-direction: column;
+            line-height: 1;
+        }
+
+        .logo-name {
+            font-size: 22px;
+            font-weight: 600;
+            color: #6c48b7;
+        }
+
+        .logo-mark {
+            font-size: 40px;
+            font-weight: 800;
+            line-height: 15px;
+        }
+
+        .logo-tagline {
+            font-size: 10px;
+            color: #6c48b7;
+            margin-left: 11px;
+            margin-top: 4px;
+        }
+
+        nav {
+            display: flex;
+            align-items: center;
+            gap: 28px;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #050505;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+        }
+
+        nav a:hover {
+            color: #6946b4;
+        }
+
+        nav button {
+            height: 37px;
+            padding: 0 18px;
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            cursor: pointer;
+        }
+
+        .signin {
+            background: white;
+            color: #161616;
+            border: 1px solid #b9a4dc;
+        }
+
+        .signup {
+            background: #6946b4;
+            color: white;
+            border: 1px solid #6946b4;
+        }
+
+        .hero {
+            position: relative;
+            min-height: 577px;
+            overflow: hidden;
+            background: linear-gradient(120deg, #6844b0, #503285);
+            color: white;
+            display: flex;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 5;
+            width: 57%;
+            margin-left: 10.8%;
+            padding-top: 108px;
+        }
+
+        .hero-content h1 {
+            font-size: 42px;
+            line-height: 1.27;
+            font-weight: 800;
+            letter-spacing: .5px;
+            text-shadow: 3px 4px 0 rgba(0,0,0,.22);
+        }
+
+        .hero-content h3 {
+            margin-top: 17px;
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .hero-content p {
+            width: 650px;
+            max-width: 100%;
+            margin-top: 17px;
+            font-size: 17px;
+            line-height: 1.6;
+        }
+
+        .get-started {
+            margin-top: 23px;
+            padding: 14px 23px;
+            border: none;
+            border-radius: 6px;
+            background: white;
+            color: #6844b0;
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .get-started:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,.2);
+        }
+
+        .hero-image {
+            position: absolute;
+            right: 8%;
+            top: 40px;
+            width: 400px;
+            height: 500px;
+            z-index: 3;
+        }
+
+        /* Placeholder for the person from the screenshot */
+        .person-placeholder {
+            position: absolute;
+            right: 20px;
+            top: 100px;
+            width: 260px;
+            height: 300px;
+            border-radius: 50% 50% 20px 20px;
+            background: linear-gradient(145deg, #f2f2f2, #c9c9c9);
+            z-index: 4;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+        }
+
+        .laptop {
+            width: 180px;
+            height: 105px;
+            margin-bottom: 35px;
+            background: #dce5e7;
+            color: #6946b4;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 700;
+            box-shadow: 0 5px 15px rgba(0,0,0,.2);
+        }
+
+        .yellow-ring {
+            position: absolute;
+            width: 430px;
+            height: 430px;
+            border: 7px solid #ffca05;
+            border-radius: 50%;
+            right: -180px;
+            top: 215px;
+            z-index: 1;
+        }
+
+        .yellow-circle-left {
+            position: absolute;
+            width: 190px;
+            height: 190px;
+            border-radius: 50%;
+            background: #ffd027;
+            left: -95px;
+            top: 185px;
+            z-index: 1;
+        }
+
+        .small-white-circle {
+            position: absolute;
+            width: 48px;
+            height: 48px;
+            background: #edf4ff;
+            border-radius: 50%;
+            left: 24px;
+            top: 178px;
+            z-index: 3;
+        }
+
+        .hero::after {
+            content: "";
+            position: absolute;
+            left: -5%;
+            bottom: -105px;
+            width: 110%;
+            height: 150px;
+            background: white;
+            border-radius: 50% 50% 0 0;
+            z-index: 10;
+        }
+
+        @media (max-width: 1100px) {
+            .hero-content {
+                margin-left: 7%;
+            }
+
+            .hero-content h1 {
+                font-size: 36px;
+            }
+
+            .hero-image {
+                right: 2%;
+                transform: scale(.85);
+            }
+
+            nav {
+                gap: 15px;
+            }
+        }
+
+        @media (max-width: 850px) {
+            .navbar {
+                height: auto;
+                padding: 15px 20px;
+            }
+
+            nav a {
+                display: none;
+            }
+
+            nav {
+                gap: 8px;
+            }
+
+            .hero {
+                min-height: 700px;
+            }
+
+            .hero-content {
+                width: 90%;
+                margin: auto;
+                padding-top: 70px;
+                text-align: center;
+            }
+
+            .hero-content h1 {
+                font-size: 34px;
+            }
+
+            .hero-content p {
+                margin-left: auto;
+                margin-right: auto;
+            }
+
+            .hero-image {
+                top: 390px;
+                right: 50%;
+                transform: translateX(50%) scale(.65);
+            }
+        }
+
+        @media (max-width: 500px) {
+            .logo-name {
+                font-size: 18px;
+            }
+
+            .logo-mark {
+                font-size: 32px;
+            }
+
+            .signin,
+            .signup {
+                padding: 0 10px;
+                font-size: 10px;
+            }
+
+            .hero {
+                min-height: 680px;
+            }
+
+            .hero-content {
+                padding-top: 55px;
+            }
+
+            .hero-content h1 {
+                font-size: 27px;
+            }
+
+            .hero-content h3 {
+                font-size: 15px;
+            }
+
+            .hero-content p {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header class="navbar">
+        <div class="logo">
+            <div class="logo-name">
+                <span class="logo-mark">A</span>cadliance
+            </div>
+            <div class="logo-tagline">Pioneering Solution</div>
+        </div>
+
+        <nav>
+            <a href="#">HOME</a>
+            <a href="#">BLOGS</a>
+            <a href="#">FIND AN EXPERT</a>
+            <a href="#">FIND A TASK</a>
+            <button class="signin">SIGN IN</button>
+            <button class="signup">SIGN UP</button>
+        </nav>
+    </header>
+
+    <section class="hero">
+
+        <div class="yellow-circle-left"></div>
+        <div class="small-white-circle"></div>
+
+        <div class="hero-content">
+            <h1>
+                Revolutionize Your<br>
+                Academic Writing Workflow<br>
+                With ACADLIANCE
+            </h1>
+
+            <h3>Upgrade your academic expedition!</h3>
+
+            <p>
+                Our platform is a perfect blend for both experts and clients!
+                Experts can showcase their skills and secure fair pay, while
+                clients can access top-tier experts and streamline projects
+                effortlessly.
+            </p>
+
+            <button class="get-started">GET STARTED</button>
+        </div>
+
+        <div class="hero-image">
+            <div class="yellow-ring"></div>
+
+            <div class="person-placeholder">
+                <div class="laptop">ACADLIANCE</div>
+            </div>
+        </div>
+
+    </section>
+
+</body>
+</html>

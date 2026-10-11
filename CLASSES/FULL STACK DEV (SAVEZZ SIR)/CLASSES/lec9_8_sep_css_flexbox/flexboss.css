@@ -1,0 +1,29 @@
+#h2{
+    color:blueviolet;
+    background-image: url(images/gear-5-monkey-d-3840x2160-17522.jpg);
+}
+nav{
+    background-color: yellow;
+    display: flex;
+    padding: 1rem;
+    gap: 1rem;
+    flex-direction: row
+    ;
+    justify-content: space-evenly;
+    /* justify sirf horizontally lagta hai isiliye hamlog flex direvction row kia hua hai  */
+
+}
+nav div{
+    width: 50px;
+    border: 1px solid red;
+}
+body{
+    background-color: lightgreen ;
+}
+#nav{
+    background-color: blue;
+    display: flex;
+    gap: 2rem;
+    padding: 2rem;
+    height: 50vh;
+}
